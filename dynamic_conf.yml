@@ -45,6 +45,9 @@ http:
     dotnet:
       insecureSkipVerify: true
       serverName: "builds.dotnet.local"
+    git-workflow:
+      insecureSkipVerify: true
+      serverName: "git-workflow.markridgwell.com"
 
   routers:
     # Dashboard router
@@ -362,6 +365,16 @@ http:
       middlewares:
         - github-api-header
 
+    git-workflow-router:
+      rule: "Host(`git-workflow.markridgwell.com`)"
+      service: git-workflow-service
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - git-workflow-header
+
   services:
     # Services for each router
     pacman-service:
@@ -561,6 +574,16 @@ http:
         servers:
           - url: "http://192.168.150.15:3000"
 
+    git-workflow-service:
+      loadBalancer:
+        serversTransport: git-workflow
+        healthCheck:
+          path: /ping
+          interval: 30s
+          timeout: 5s
+        servers:
+          - url: "https://192.168.150.15:8081"
+
   middlewares:
     # Middleware for each header
     pacman-header:
@@ -698,3 +721,8 @@ http:
       headers:
         customRequestHeaders:
           Host: "github-api.markridgwell.com"
+
+    git-workflow-header:
+      headers:
+        customRequestHeaders:
+          Host: "git-workflow.markridgwell.com"
