@@ -578,7 +578,7 @@ http:
       loadBalancer:
         serversTransport: git-workflow
         healthCheck:
-          path: /priorities
+          path: /ping
           interval: 30s
           timeout: 5s
         servers:
