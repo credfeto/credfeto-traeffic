@@ -29,6 +29,9 @@ http:
     dns:
       insecureSkipVerify: true
       serverName: "dns.markridgwell.com"
+    dns-admin:
+      insecureSkipVerify: true
+      serverName: "dns-server"
 
     api-nuget:
       insecureSkipVerify: true
@@ -551,23 +554,27 @@ http:
 
     dns-01-service:
       loadBalancer:
+        serversTransport: dns-admin
         servers:
-          - url: "http://192.168.42.251:3000"
+          - url: "https://192.168.42.251:53443"
 
     dns-02-service:
       loadBalancer:
+        serversTransport: dns-admin
         servers:
-          - url: "http://192.168.42.252:3000"
+          - url: "https://192.168.42.252:53443"
 
     dns-03-service:
       loadBalancer:
+        serversTransport: dns-admin
         servers:
-          - url: "http://192.168.42.253:3000"
+          - url: "https://192.168.42.253:53443"
 
     dns-04-service:
       loadBalancer:
+        serversTransport: dns-admin
         servers:
-          - url: "http://192.168.42.254:3000"
+          - url: "https://192.168.42.254:53443"
 
     github-api-service:
       loadBalancer:
