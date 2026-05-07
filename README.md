@@ -159,7 +159,7 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 Port 450 is the Cloudflare Tunnel origin for `photos.markridgwell.com`. To prevent direct access that bypasses Cloudflare, Traefik validates a shared-secret header on all requests arriving on this port:
 
 - Requests with `X-Local: <PHOTOS_LOCAL_SECRET>` are forwarded to the Immich backend.
-- All other requests receive Traefik's default 404 (no matching router).
+- All other requests receive **403 Forbidden** from the `traefik-api-token-middleware` plugin.
 
 **Configuration:** Set `PHOTOS_LOCAL_SECRET` in `.env`, then configure the Cloudflare Tunnel origin rule for `photos.markridgwell.com` to add the request header `X-Local: <same value>`. The Cloudflare dashboard path is: **Zero Trust → Networks → Tunnels → [your tunnel] → Public Hostnames → photos.markridgwell.com → Additional application settings → HTTP Settings → Request headers**.
 
