@@ -152,8 +152,8 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 ### NuGet Registries
 
 - `api-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **449** (HTTPS/TLS + HTTP/3)
-- `funfair-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
-- `funfair-prerelease-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
+- `funfair-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **455** (HTTPS/TLS + HTTP/3)
+- `funfair-prerelease-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **456** (HTTPS/TLS + HTTP/3)
 
 ### NPM Registry
 
@@ -188,5 +188,7 @@ The following table lists all exposed ports and their purposes:
 - **451** (TCP/UDP): AUR Repository — HTTPS with TLS + HTTP/3
 - **452** (TCP/UDP): Pacman Cache — HTTPS with TLS + HTTP/3
 - **453** (TCP/UDP): Flathub Repository — HTTPS with TLS + HTTP/3
+- **455** (TCP/UDP): FunFair NuGet Registry — HTTPS with TLS + HTTP/3
+- **456** (TCP/UDP): FunFair Pre-release NuGet Registry — HTTPS with TLS + HTTP/3
 
 Direct ports use Let's Encrypt TLS and are intended for internal network access or specialised tools that require a dedicated port.

@@ -439,6 +439,26 @@ http:
       middlewares:
         - flathub-header
 
+    funfair-nuget-direct-router:
+      rule: "Host(`funfair-nuget.markridgwell.com`)"
+      service: funfair-nuget-service
+      entryPoints:
+        - funfair-nuget
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - funfair-nuget-header
+
+    funfair-prerelease-nuget-direct-router:
+      rule: "Host(`funfair-prerelease-nuget.markridgwell.com`)"
+      service: funfair-prerelease-nuget-service
+      entryPoints:
+        - funfair-prerelease-nuget
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - funfair-prerelease-nuget-header
+
 
   services:
     # Services for each router

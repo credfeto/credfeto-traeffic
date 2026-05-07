@@ -31,6 +31,11 @@ services:
       - "452:452/udp"
       - "453:453/tcp"
       - "453:453/udp"
+
+      - "455:455/tcp"
+      - "455:455/udp"
+      - "456:456/tcp"
+      - "456:456/udp"
     volumes:
       - "./traefik.yml:/etc/traefik/traefik.yml"
       - "./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml"
