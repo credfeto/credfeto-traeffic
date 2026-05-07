@@ -378,6 +378,72 @@ http:
       middlewares:
         - git-workflow-header
 
+    # Direct port routers (plain HTTP — TLS terminated by Cloudflare Tunnel)
+    npm-direct-router:
+      rule: "Host(`npm.markridgwell.com`)"
+      service: npm-service
+      entryPoints:
+        - npm
+      middlewares:
+        - npm-header
+
+    api-nuget-direct-router:
+      rule: "Host(`api-nuget.markridgwell.com`)"
+      service: api-nuget-service
+      entryPoints:
+        - api-nuget
+      middlewares:
+        - api-nuget-header
+
+    photos-direct-router:
+      rule: "Host(`photos.markridgwell.com`)"
+      service: photos-service
+      entryPoints:
+        - photos
+      middlewares:
+        - photos-header
+
+    aur-direct-router:
+      rule: "Host(`aur.markridgwell.com`)"
+      service: aur-service
+      entryPoints:
+        - aur
+      middlewares:
+        - aur-header
+
+    pacman-direct-router:
+      rule: "Host(`pacman.markridgwell.com`)"
+      service: pacman-service
+      entryPoints:
+        - pacman
+      middlewares:
+        - pacman-header
+
+    flathub-direct-router:
+      rule: "Host(`flathub.markridgwell.com`)"
+      service: flathub-service
+      entryPoints:
+        - flathub
+      middlewares:
+        - flathub-header
+
+    funfair-nuget-direct-router:
+      rule: "Host(`funfair-nuget.markridgwell.com`)"
+      service: funfair-nuget-service
+      entryPoints:
+        - funfair-nuget
+      middlewares:
+        - funfair-nuget-header
+
+    funfair-prerelease-nuget-direct-router:
+      rule: "Host(`funfair-prerelease-nuget.markridgwell.com`)"
+      service: funfair-prerelease-nuget-service
+      entryPoints:
+        - funfair-prerelease-nuget
+      middlewares:
+        - funfair-prerelease-nuget-header
+
+
   services:
     # Services for each router
     pacman-service:
@@ -546,11 +612,6 @@ http:
     dns-service:
       loadBalancer:
         serversTransport: dns
-        healthCheck:
-          path: /dns-query
-          interval: 30s
-          timeout: 5s
-          scheme: https
         servers:
           - url: "https://192.168.42.251"
           - url: "https://192.168.42.252"
