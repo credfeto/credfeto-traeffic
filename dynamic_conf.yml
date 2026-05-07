@@ -378,14 +378,12 @@ http:
       middlewares:
         - git-workflow-header
 
-    # Direct port routers for services
+    # Direct port routers (plain HTTP — TLS terminated by Cloudflare Tunnel)
     npm-direct-router:
       rule: "Host(`npm.markridgwell.com`)"
       service: npm-service
       entryPoints:
         - npm
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - npm-header
 
@@ -394,8 +392,6 @@ http:
       service: api-nuget-service
       entryPoints:
         - api-nuget
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - api-nuget-header
 
@@ -404,8 +400,6 @@ http:
       service: photos-service
       entryPoints:
         - photos
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - photos-header
 
@@ -414,8 +408,6 @@ http:
       service: aur-service
       entryPoints:
         - aur
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - aur-header
 
@@ -424,8 +416,6 @@ http:
       service: pacman-service
       entryPoints:
         - pacman
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - pacman-header
 
@@ -434,8 +424,6 @@ http:
       service: flathub-service
       entryPoints:
         - flathub
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - flathub-header
 
@@ -444,8 +432,6 @@ http:
       service: funfair-nuget-service
       entryPoints:
         - funfair-nuget
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - funfair-nuget-header
 
@@ -454,8 +440,6 @@ http:
       service: funfair-prerelease-nuget-service
       entryPoints:
         - funfair-prerelease-nuget
-      tls:
-        certResolver: letsencrypt
       middlewares:
         - funfair-prerelease-nuget-header
 
@@ -628,12 +612,6 @@ http:
     dns-service:
       loadBalancer:
         serversTransport: dns
-        healthCheck:
-          path: /
-          hostname: dns.markridgwell.com
-          interval: 30s
-          timeout: 5s
-          scheme: https
         servers:
           - url: "https://192.168.42.251"
           - url: "https://192.168.42.252"

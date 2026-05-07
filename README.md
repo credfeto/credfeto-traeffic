@@ -147,17 +147,17 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 ### Media
 
-- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTPS/TLS + HTTP/3)
+- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTP direct)
 
 ### NuGet Registries
 
-- `api-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **449** (HTTPS/TLS + HTTP/3)
-- `funfair-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **455** (HTTPS/TLS + HTTP/3)
-- `funfair-prerelease-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **456** (HTTPS/TLS + HTTP/3)
+- `api-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **449** (HTTP direct)
+- `funfair-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **455** (HTTP direct)
+- `funfair-prerelease-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **456** (HTTP direct)
 
 ### NPM Registry
 
-- `npm.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **448** (HTTPS/TLS + HTTP/3)
+- `npm.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **448** (HTTP direct)
 
 ### .NET Build Artefacts
 
@@ -169,10 +169,10 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 ### Linux Package Mirrors
 
-- `aur.markridgwell.com` → `https://192.168.150.200:7776`, `https://192.168.150.201:7776` — also available on port **451** (HTTPS/TLS + HTTP/3)
+- `aur.markridgwell.com` → `https://192.168.150.200:7776`, `https://192.168.150.201:7776` — also available on port **451** (HTTP direct)
 - `aur-repo.markridgwell.com` → `https://192.168.150.10:5555`, `https://192.168.150.20:5555`
-- `pacman.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **452** (HTTPS/TLS + HTTP/3)
-- `flathub.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **453** (HTTPS/TLS + HTTP/3)
+- `pacman.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **452** (HTTP direct)
+- `flathub.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **453** (HTTP direct)
 
 ## Port Mappings
 
@@ -182,13 +182,13 @@ The following table lists all exposed ports and their purposes:
 - **444** (TCP/UDP): Docker Registry direct port (HTTP)
 - **446** (TCP/UDP): Home Service direct port (HTTP)
 - **447** (TCP/UDP): DeFi Service direct port (HTTP)
-- **448** (TCP/UDP): NPM Registry — HTTPS with TLS + HTTP/3
-- **449** (TCP/UDP): API NuGet Registry — HTTPS with TLS + HTTP/3
-- **450** (TCP/UDP): Photos service — HTTPS with TLS + HTTP/3
-- **451** (TCP/UDP): AUR Repository — HTTPS with TLS + HTTP/3
-- **452** (TCP/UDP): Pacman Cache — HTTPS with TLS + HTTP/3
-- **453** (TCP/UDP): Flathub Repository — HTTPS with TLS + HTTP/3
-- **455** (TCP/UDP): FunFair NuGet Registry — HTTPS with TLS + HTTP/3
-- **456** (TCP/UDP): FunFair Pre-release NuGet Registry — HTTPS with TLS + HTTP/3
+- **448** (TCP): NPM Registry — HTTP (TLS terminated by Cloudflare Tunnel)
+- **449** (TCP): API NuGet Registry — HTTP (TLS terminated by Cloudflare Tunnel)
+- **450** (TCP): Photos service — HTTP (TLS terminated by Cloudflare Tunnel)
+- **451** (TCP): AUR Repository — HTTP (TLS terminated by Cloudflare Tunnel)
+- **452** (TCP): Pacman Cache — HTTP (TLS terminated by Cloudflare Tunnel)
+- **453** (TCP): Flathub Repository — HTTP (TLS terminated by Cloudflare Tunnel)
+- **455** (TCP): FunFair NuGet Registry — HTTP (TLS terminated by Cloudflare Tunnel)
+- **456** (TCP): FunFair Pre-release NuGet Registry — HTTP (TLS terminated by Cloudflare Tunnel)
 
-Direct ports use Let's Encrypt TLS and are intended for internal network access or specialised tools that require a dedicated port.
+Direct ports are plain HTTP. TLS is handled by Cloudflare Tunnel on the public side — Traefik does not need to re-encrypt the internal leg.
