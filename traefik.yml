@@ -54,6 +54,10 @@ entryPoints:
 
   npm:
     address: ":448"
+    http:
+      tls:
+        certResolver: letsencrypt
+    http3: {}
     forwardedHeaders:
       trustedIPs:
         - "10.0.0.0/8"
@@ -64,6 +68,10 @@ entryPoints:
 
   api-nuget:
     address: ":449"
+    http:
+      tls:
+        certResolver: letsencrypt
+    http3: {}
     forwardedHeaders:
       trustedIPs:
         - "10.0.0.0/8"
@@ -74,6 +82,10 @@ entryPoints:
 
   photos:
     address: ":450"
+    http:
+      tls:
+        certResolver: letsencrypt
+    http3: {}
     forwardedHeaders:
       trustedIPs:
         - "10.0.0.0/8"
@@ -84,6 +96,10 @@ entryPoints:
 
   aur:
     address: ":451"
+    http:
+      tls:
+        certResolver: letsencrypt
+    http3: {}
     forwardedHeaders:
       trustedIPs:
         - "10.0.0.0/8"
@@ -94,6 +110,10 @@ entryPoints:
 
   pacman:
     address: ":452"
+    http:
+      tls:
+        certResolver: letsencrypt
+    http3: {}
     forwardedHeaders:
       trustedIPs:
         - "10.0.0.0/8"
@@ -104,6 +124,10 @@ entryPoints:
 
   flathub:
     address: ":453"
+    http:
+      tls:
+        certResolver: letsencrypt
+    http3: {}
     forwardedHeaders:
       trustedIPs:
         - "10.0.0.0/8"

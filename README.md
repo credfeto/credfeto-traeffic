@@ -147,17 +147,17 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 ### Media
 
-- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTP direct)
+- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTPS/TLS + HTTP/3)
 
 ### NuGet Registries
 
-- `api-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **449** (HTTP direct)
+- `api-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **449** (HTTPS/TLS + HTTP/3)
 - `funfair-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
 - `funfair-prerelease-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
 
 ### NPM Registry
 
-- `npm.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **448** (HTTP direct)
+- `npm.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **448** (HTTPS/TLS + HTTP/3)
 
 ### .NET Build Artefacts
 
@@ -169,10 +169,10 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 ### Linux Package Mirrors
 
-- `aur.markridgwell.com` → `https://192.168.150.200:7776`, `https://192.168.150.201:7776` — also available on port **451** (HTTP direct)
+- `aur.markridgwell.com` → `https://192.168.150.200:7776`, `https://192.168.150.201:7776` — also available on port **451** (HTTPS/TLS + HTTP/3)
 - `aur-repo.markridgwell.com` → `https://192.168.150.10:5555`, `https://192.168.150.20:5555`
-- `pacman.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **452** (HTTP direct)
-- `flathub.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **453** (HTTP direct)
+- `pacman.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **452** (HTTPS/TLS + HTTP/3)
+- `flathub.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **453** (HTTPS/TLS + HTTP/3)
 
 ## Port Mappings
 
@@ -182,11 +182,11 @@ The following table lists all exposed ports and their purposes:
 - **444** (TCP/UDP): Docker Registry direct port (HTTP)
 - **446** (TCP/UDP): Home Service direct port (HTTP)
 - **447** (TCP/UDP): DeFi Service direct port (HTTP)
-- **448** (TCP): NPM Registry direct port (HTTP)
-- **449** (TCP): API NuGet Registry direct port (HTTP)
-- **450** (TCP): Photos service direct port (HTTP)
-- **451** (TCP): AUR Repository direct port (HTTP)
-- **452** (TCP): Pacman Cache direct port (HTTP)
-- **453** (TCP): Flathub Repository direct port (HTTP)
+- **448** (TCP/UDP): NPM Registry — HTTPS with TLS + HTTP/3
+- **449** (TCP/UDP): API NuGet Registry — HTTPS with TLS + HTTP/3
+- **450** (TCP/UDP): Photos service — HTTPS with TLS + HTTP/3
+- **451** (TCP/UDP): AUR Repository — HTTPS with TLS + HTTP/3
+- **452** (TCP/UDP): Pacman Cache — HTTPS with TLS + HTTP/3
+- **453** (TCP/UDP): Flathub Repository — HTTPS with TLS + HTTP/3
 
-Direct ports bypass TLS and are intended for internal network access or specialised tools that don't support HTTPS proxying.
+Direct ports use Let's Encrypt TLS and are intended for internal network access or specialised tools that require a dedicated port.
