@@ -1,8 +1,22 @@
 services:
+  config-gen:
+    image: "alpine:latest"
+    restart: "no"
+    command: ["/bin/sh", "/generate-config.sh"]
+    environment:
+      - PHOTOS_LOCAL_SECRET=${PHOTOS_LOCAL_SECRET}
+    volumes:
+      - "./generate-config.sh:/generate-config.sh:ro"
+      - "./dynamic_conf.yml.template:/templates/dynamic_conf.yml.template:ro"
+      - "traefik-dynamic:/config"
+
   traefik:
     image: "traefik:v3.6.13"
     container_name: "traefik"
     restart: always
+    depends_on:
+      config-gen:
+        condition: service_completed_successfully
     command:
       - "--configFile=/etc/traefik/traefik.yml"
     environment:
@@ -30,8 +44,15 @@ services:
       - "456:456/tcp"
     volumes:
       - "./traefik.yml:/etc/traefik/traefik.yml"
-      - "./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml"
+      - "traefik-dynamic:/etc/traefik-dynamic:ro"
       - "traefik-acme:/etc/traefik/acme"
+
+  traefik-reject:
+    image: "nginx:alpine"
+    container_name: "traefik-reject"
+    restart: always
+    volumes:
+      - "./nginx-reject.conf:/etc/nginx/conf.d/default.conf:ro"
 
   cloudflare:
     image: cloudflare/cloudflared:latest
@@ -53,3 +74,4 @@ volumes:
   traefik-acme:
     name: traefik-acme
     external: true
+  traefik-dynamic:
