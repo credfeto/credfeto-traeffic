@@ -178,17 +178,23 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 The following table lists all exposed ports and their purposes:
 
-- **443** (TCP/UDP): HTTPS entrypoint — all services with Let's Encrypt TLS
-- **444** (TCP/UDP): Docker Registry direct port (HTTP)
-- **446** (TCP/UDP): Home Service direct port (HTTP)
-- **447** (TCP/UDP): DeFi Service direct port (HTTP)
-- **448** (TCP): NPM Registry — HTTP (TLS terminated by Cloudflare Tunnel)
-- **449** (TCP): API NuGet Registry — HTTP (TLS terminated by Cloudflare Tunnel)
-- **450** (TCP): Photos service — HTTP (TLS terminated by Cloudflare Tunnel)
-- **451** (TCP): AUR Repository — HTTP (TLS terminated by Cloudflare Tunnel)
-- **452** (TCP): Pacman Cache — HTTP (TLS terminated by Cloudflare Tunnel)
-- **453** (TCP): Flathub Repository — HTTP (TLS terminated by Cloudflare Tunnel)
-- **455** (TCP): FunFair NuGet Registry — HTTP (TLS terminated by Cloudflare Tunnel)
-- **456** (TCP): FunFair Pre-release NuGet Registry — HTTP (TLS terminated by Cloudflare Tunnel)
+- **443** (TCP/UDP): HTTPS entrypoint — all services with Let's Encrypt TLS + HTTP/3
 
-Direct ports are plain HTTP. TLS is handled by Cloudflare Tunnel on the public side — Traefik does not need to re-encrypt the internal leg.
+The ports below are plain HTTP used as Cloudflare Tunnel origin services.
+**Each hostname must have its own dedicated port** — Cloudflare Tunnel ingress rules
+route by hostname, and each rule maps to a single origin URL (including port).
+
+- **444** (TCP): Docker Registry — HTTP (Cloudflare Tunnel origin)
+- **446** (TCP): Home Service — HTTP (Cloudflare Tunnel origin)
+- **447** (TCP): DeFi Service — HTTP (Cloudflare Tunnel origin)
+- **448** (TCP): NPM Registry — HTTP (Cloudflare Tunnel origin)
+- **449** (TCP): API NuGet Registry — HTTP (Cloudflare Tunnel origin)
+- **450** (TCP): Photos service — HTTP (Cloudflare Tunnel origin)
+- **451** (TCP): AUR Repository — HTTP (Cloudflare Tunnel origin)
+- **452** (TCP): Pacman Cache — HTTP (Cloudflare Tunnel origin)
+- **453** (TCP): Flathub Repository — HTTP (Cloudflare Tunnel origin)
+- **455** (TCP): FunFair NuGet Registry — HTTP (Cloudflare Tunnel origin)
+- **456** (TCP): FunFair Pre-release NuGet Registry — HTTP (Cloudflare Tunnel origin)
+
+TLS is terminated by Cloudflare on the public side. Traefik does not re-encrypt
+the internal leg from `cloudflared` to itself.
