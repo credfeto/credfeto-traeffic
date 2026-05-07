@@ -380,50 +380,62 @@ http:
 
     # Direct port routers for services
     npm-direct-router:
-      rule: "PathPrefix(`/`)"
+      rule: "Host(`npm.markridgwell.com`)"
       service: npm-service
       entryPoints:
         - npm
+      tls:
+        certResolver: letsencrypt
       middlewares:
         - npm-header
 
     api-nuget-direct-router:
-      rule: "PathPrefix(`/`)"
+      rule: "Host(`api-nuget.markridgwell.com`)"
       service: api-nuget-service
       entryPoints:
         - api-nuget
+      tls:
+        certResolver: letsencrypt
       middlewares:
         - api-nuget-header
 
     photos-direct-router:
-      rule: "PathPrefix(`/`)"
+      rule: "Host(`photos.markridgwell.com`)"
       service: photos-service
       entryPoints:
         - photos
+      tls:
+        certResolver: letsencrypt
       middlewares:
         - photos-header
 
     aur-direct-router:
-      rule: "PathPrefix(`/`)"
+      rule: "Host(`aur.markridgwell.com`)"
       service: aur-service
       entryPoints:
         - aur
+      tls:
+        certResolver: letsencrypt
       middlewares:
         - aur-header
 
     pacman-direct-router:
-      rule: "PathPrefix(`/`)"
+      rule: "Host(`pacman.markridgwell.com`)"
       service: pacman-service
       entryPoints:
         - pacman
+      tls:
+        certResolver: letsencrypt
       middlewares:
         - pacman-header
 
     flathub-direct-router:
-      rule: "PathPrefix(`/`)"
+      rule: "Host(`flathub.markridgwell.com`)"
       service: flathub-service
       entryPoints:
         - flathub
+      tls:
+        certResolver: letsencrypt
       middlewares:
         - flathub-header
 
