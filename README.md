@@ -39,7 +39,7 @@ CLOUDFLARE_TUNNEL_TOKEN=your_cloudflare_tunnel_token
 ### Environment variables reference
 
 | Variable | Required | Used by | Purpose |
-|----------|----------|---------|---------|
+| -------- | -------- | ------- | ------- |
 | `CLOUDFLARE_EMAIL` | Yes | `traefik` | Used to populate Traefik ACME email (`TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL`) for Let's Encrypt registration. |
 | `CF_DNS_API_TOKEN` | Yes | `traefik` | Cloudflare DNS API token used by the ACME DNS challenge provider. |
 | `CLOUDFLARE_TUNNEL_TOKEN` | Yes (if running `cloudflare` service) | `cloudflare` | Token passed to `cloudflared tunnel run --token ...` to establish the Cloudflare Tunnel. |
@@ -54,7 +54,7 @@ docker compose up -d
 ## Configuration files
 
 | File | Purpose |
-|------|---------|
+| ---- | ------- |
 | `traefik.yml` | Static configuration — entrypoints, ACME, providers |
 | `dynamic_conf.yml` | Dynamic configuration — routers, services, middlewares |
 | `traefik-acme` (Docker volume) | Let's Encrypt certificate storage |
@@ -97,7 +97,7 @@ Traefik watches `dynamic_conf.yml` for changes and reloads automatically — no 
 The following DNS routes are configured in `dynamic_conf.yml`:
 
 | Hostname | Upstream service target |
-|----------|-------------------------|
+| -------- | ----------------------- |
 | `dns.markridgwell.com` | `https://192.168.42.251`, `https://192.168.42.252`, `https://192.168.42.253`, `https://192.168.42.254` |
 | `dns-01.markridgwell.com` | `http://192.168.42.251:3000` |
 | `dns-02.markridgwell.com` | `http://192.168.42.252:3000` |
@@ -188,6 +188,5 @@ The following table lists all exposed ports and their purposes:
 - **451** (TCP): AUR Repository direct port (HTTP)
 - **452** (TCP): Pacman Cache direct port (HTTP)
 - **453** (TCP): Flathub Repository direct port (HTTP)
-- **454** (TCP): DeFi Service direct port (HTTP)
 
 Direct ports bypass TLS and are intended for internal network access or specialised tools that don't support HTTPS proxying.

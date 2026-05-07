@@ -395,11 +395,11 @@ http:
       middlewares:
         - api-nuget-header
 
-    hotos-direct-router:
+    photos-direct-router:
       rule: "PathPrefix(`/`)"
       service: photos-service
       entryPoints:
-        - hotos
+        - photos
       middlewares:
         - photos-header
 
@@ -427,13 +427,6 @@ http:
       middlewares:
         - flathub-header
 
-    defi-direct-router:
-      rule: "PathPrefix(`/`)"
-      service: defi-service
-      entryPoints:
-        - defi-direct
-      middlewares:
-        - defi-header
 
   services:
     # Services for each router
