@@ -50,18 +50,20 @@ PHOTOS_LOCAL_SECRET=your_photos_shared_secret
 ### 3. Start Traefik
 
 ```bash
-docker compose up -d
+./update
 ```
+
+The `update` script validates `.env`, generates `dynamic_conf.yml` from the template, sets up volumes and firewall rules, pulls images, and starts the containers.
 
 ## Configuration files
 
 | File | Purpose |
 | ---- | ------- |
 | `traefik.yml` | Static configuration — entrypoints, ACME, providers |
-| `dynamic_conf.yml.template` | Dynamic configuration template — routers, services, middlewares; `${PHOTOS_LOCAL_SECRET}` is substituted at startup |
-| `generate-config.sh` | Startup script that substitutes env vars in the template and writes the generated config to a Docker volume |
+| `dynamic_conf.yml.template` | Dynamic configuration template — routers, services, middlewares; committed to git |
+| `dynamic_conf.yml` | Generated from template by `./update`; gitignored, never committed |
+| `nginx-reject.conf` | nginx config for the `traefik-reject` service (returns 401) |
 | `traefik-acme` (Docker volume) | Let's Encrypt certificate storage |
-| `traefik-dynamic` (Docker volume) | Generated dynamic config (created at startup by `config-gen` service) |
 
 ## Adding a new service
 
@@ -94,11 +96,11 @@ http:
           Host: "my-service.local"
 ```
 
-Traefik watches the generated `dynamic_conf.yml` for changes and reloads automatically. To change routes or services, edit `dynamic_conf.yml.template` and restart the `config-gen` service followed by `traefik` (or run `docker compose up -d --force-recreate`).
+Traefik watches `dynamic_conf.yml` for changes and reloads automatically — no restart required for route or service changes. To apply template changes that alter `${PHOTOS_LOCAL_SECRET}` or other substituted values, re-run `./update`.
 
 ## DNS services
 
-The following DNS routes are configured in `dynamic_conf.yml`:
+The following DNS routes are configured in `dynamic_conf.yml.template`:
 
 | Hostname | Upstream service target |
 | -------- | ----------------------- |
