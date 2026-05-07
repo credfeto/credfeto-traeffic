@@ -629,7 +629,7 @@ http:
       loadBalancer:
         serversTransport: dns
         healthCheck:
-          path: /dns-query
+          path: /
           interval: 30s
           timeout: 5s
           scheme: https
