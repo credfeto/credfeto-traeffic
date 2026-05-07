@@ -117,42 +117,77 @@ The `dns-01` to `dns-04` routes forward to HTTP backends on port `3000` and each
 
 The Traefik dashboard is available at `https://proxy.markridgwell.com` once running.
 
+## Services
+
+All services are accessible via HTTPS on port 443 with Let's Encrypt certificates unless stated otherwise.
+
+### Development Cache Services
+
+- `dev-cache-01.markridgwell.com` → `http://192.168.150.100:8080`
+- `dev-cache-02.markridgwell.com` → `http://192.168.150.101:8080`
+- `linux-cache-01.markridgwell.com` → `http://192.168.150.200:8080`
+- `linux-cache-02.markridgwell.com` → `http://192.168.150.201:8080`
+
+### Docker Services
+
+- `docker-registry.markridgwell.com` → `http://192.168.150.202:8080` — also available on port **444** (HTTP direct)
+- `docker-cache.markridgwell.com` → `http://192.168.150.202:8081`
+
+### Git / Workflow Services
+
+- `github-api.markridgwell.com` → `http://192.168.150.15:3000`
+- `git-workflow.markridgwell.com` → `https://192.168.150.15:8081`
+
+### Home Automation
+
+- `home.markridgwell.com` → `http://192.168.150.150:8080` — also available on port **446** (HTTP direct)
+- `homeassistant.markridgwell.com` → `http://192.168.34.8:8123`
+- `audiobookshelf.markridgwell.com` → `http://192.168.150.16:8080`
+- `defi.markridgwell.com` → `https://192.168.150.12` — also available on port **447** (HTTP direct)
+
+### Media
+
+- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTP direct)
+
+### NuGet Registries
+
+- `api-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **449** (HTTP direct)
+- `funfair-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
+- `funfair-prerelease-nuget.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
+
+### NPM Registry
+
+- `npm.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555` — also available on port **448** (HTTP direct)
+
+### .NET Build Artefacts
+
+- `dotnet.markridgwell.com` → `https://192.168.150.100:5555`, `https://192.168.150.101:5555`
+
+### AI Services
+
+- `ollama.markridgwell.com` → `https://192.168.150.10:5555`, `https://192.168.150.20:5555`
+
+### Linux Package Mirrors
+
+- `aur.markridgwell.com` → `https://192.168.150.200:7776`, `https://192.168.150.201:7776` — also available on port **451** (HTTP direct)
+- `aur-repo.markridgwell.com` → `https://192.168.150.10:5555`, `https://192.168.150.20:5555`
+- `pacman.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **452** (HTTP direct)
+- `flathub.markridgwell.com` → `https://192.168.150.200:7777`, `https://192.168.150.201:7777` — also available on port **453** (HTTP direct)
+
 ## Port Mappings
 
 The following table lists all exposed ports and their purposes:
 
-- **443** (TCP/UDP): HTTPS/Let's Encrypt for web-general entrypoint
+- **443** (TCP/UDP): HTTPS entrypoint — all services with Let's Encrypt TLS
 - **444** (TCP/UDP): Docker Registry direct port (HTTP)
 - **446** (TCP/UDP): Home Service direct port (HTTP)
 - **447** (TCP/UDP): DeFi Service direct port (HTTP)
-- **448** (TCP): NPM Registry direct port
-- **449** (TCP): API NuGet Registry direct port
-- **450** (TCP): Hotos/Photos direct port
-- **451** (TCP): AUR Repository direct port
-- **452** (TCP): Pacman Cache direct port
-- **453** (TCP): Flathub Repository direct port
-- **454** (TCP): DeFi Service alternate direct port
+- **448** (TCP): NPM Registry direct port (HTTP)
+- **449** (TCP): API NuGet Registry direct port (HTTP)
+- **450** (TCP): Photos service direct port (HTTP)
+- **451** (TCP): AUR Repository direct port (HTTP)
+- **452** (TCP): Pacman Cache direct port (HTTP)
+- **453** (TCP): Flathub Repository direct port (HTTP)
+- **454** (TCP): DeFi Service direct port (HTTP)
 
-### Service Access Methods
-
-Each service can be accessed via:
-
-1. **HTTPS with Let's Encrypt** (port 443):
-   - `npm.markridgwell.com`
-   - `api-nuget.markridgwell.com`
-   - `hotos.markridgwell.com`
-   - `aur.markridgwell.com`
-   - `pacman.markridgwell.com`
-   - `flathub.markridgwell.com`
-   - `defi.markridgwell.com`
-
-2. **Direct HTTP ports** (bypassing TLS):
-   - NPM: port 448
-   - API NuGet: port 449
-   - Photos: port 450
-   - AUR: port 451
-   - Pacman: port 452
-   - Flathub: port 453
-   - DeFi: port 454
-
-Direct ports are intended for internal network access or specialised tools that don't support HTTPS proxying.
+Direct ports bypass TLS and are intended for internal network access or specialised tools that don't support HTTPS proxying.
