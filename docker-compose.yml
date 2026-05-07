@@ -33,13 +33,6 @@ services:
       - "./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml"
       - "traefik-acme:/etc/traefik/acme"
 
-  traefik-reject:
-    image: "nginx:alpine"
-    container_name: "traefik-reject"
-    restart: always
-    volumes:
-      - "./nginx-reject.conf:/etc/nginx/conf.d/default.conf:ro"
-
   cloudflare:
     image: cloudflare/cloudflared:latest
     container_name: cloudflare

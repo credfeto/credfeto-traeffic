@@ -395,23 +395,13 @@ http:
       middlewares:
         - api-nuget-header
 
-    # High priority: allow through only if X-Local header matches the shared secret
-    photos-direct-auth-router:
+    photos-direct-router:
       rule: "Host(`photos.markridgwell.com`) && Header(`X-Local`, `${PHOTOS_LOCAL_SECRET}`)"
       service: photos-service
       entryPoints:
         - photos
       middlewares:
         - photos-header
-      priority: 100
-
-    # Low priority: reject all other requests with 401
-    photos-direct-reject-router:
-      rule: "Host(`photos.markridgwell.com`)"
-      service: photos-reject-service
-      entryPoints:
-        - photos
-      priority: 1
 
     aur-direct-router:
       rule: "Host(`aur.markridgwell.com`)"
@@ -500,11 +490,6 @@ http:
       loadBalancer:
         servers:
           - url: "http://192.168.150.154:2283"
-
-    photos-reject-service:
-      loadBalancer:
-        servers:
-          - url: "http://traefik-reject:80"
 
     homeassistant-service:
       loadBalancer:
