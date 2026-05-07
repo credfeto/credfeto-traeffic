@@ -630,6 +630,7 @@ http:
         serversTransport: dns
         healthCheck:
           path: /
+          hostname: dns.markridgwell.com
           interval: 30s
           timeout: 5s
           scheme: https
