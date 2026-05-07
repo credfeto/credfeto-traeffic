@@ -116,3 +116,43 @@ The `dns-01` to `dns-04` routes forward to HTTP backends on port `3000` and each
 ## Dashboard
 
 The Traefik dashboard is available at `https://proxy.markridgwell.com` once running.
+
+## Port Mappings
+
+The following table lists all exposed ports and their purposes:
+
+- **443** (TCP/UDP): HTTPS/Let's Encrypt for web-general entrypoint
+- **444** (TCP/UDP): Docker Registry direct port (HTTP)
+- **446** (TCP/UDP): Home Service direct port (HTTP)
+- **447** (TCP/UDP): DeFi Service direct port (HTTP)
+- **448** (TCP): NPM Registry direct port
+- **449** (TCP): API NuGet Registry direct port
+- **450** (TCP): Hotos/Photos direct port
+- **451** (TCP): AUR Repository direct port
+- **452** (TCP): Pacman Cache direct port
+- **453** (TCP): Flathub Repository direct port
+- **454** (TCP): DeFi Service alternate direct port
+
+### Service Access Methods
+
+Each service can be accessed via:
+
+1. **HTTPS with Let's Encrypt** (port 443):
+   - `npm.markridgwell.com`
+   - `api-nuget.markridgwell.com`
+   - `hotos.markridgwell.com`
+   - `aur.markridgwell.com`
+   - `pacman.markridgwell.com`
+   - `flathub.markridgwell.com`
+   - `defi.markridgwell.com`
+
+2. **Direct HTTP ports** (bypassing TLS):
+   - NPM: port 448
+   - API NuGet: port 449
+   - Photos: port 450
+   - AUR: port 451
+   - Pacman: port 452
+   - Flathub: port 453
+   - DeFi: port 454
+
+Direct ports are intended for internal network access or specialised tools that don't support HTTPS proxying.
