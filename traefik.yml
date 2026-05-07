@@ -52,6 +52,76 @@ entryPoints:
         - "fc00::/7"
         - "fe80::/10"
 
+  npm:
+    address: ":448"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
+  api-nuget:
+    address: ":449"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
+  hotos:
+    address: ":450"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
+  aur:
+    address: ":451"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
+  pacman:
+    address: ":452"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
+  flathub:
+    address: ":453"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
+  defi-direct:
+    address: ":454"
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "fc00::/7"
+        - "fe80::/10"
+
 # Requires CF_DNS_API_TOKEN environment variable for Cloudflare
 certificatesResolvers:
   letsencrypt:

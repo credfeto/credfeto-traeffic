@@ -378,6 +378,63 @@ http:
       middlewares:
         - git-workflow-header
 
+    # Direct port routers for services
+    npm-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: npm-service
+      entryPoints:
+        - npm
+      middlewares:
+        - npm-header
+
+    api-nuget-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: api-nuget-service
+      entryPoints:
+        - api-nuget
+      middlewares:
+        - api-nuget-header
+
+    hotos-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: photos-service
+      entryPoints:
+        - hotos
+      middlewares:
+        - photos-header
+
+    aur-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: aur-service
+      entryPoints:
+        - aur
+      middlewares:
+        - aur-header
+
+    pacman-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: pacman-service
+      entryPoints:
+        - pacman
+      middlewares:
+        - pacman-header
+
+    flathub-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: flathub-service
+      entryPoints:
+        - flathub
+      middlewares:
+        - flathub-header
+
+    defi-direct-router:
+      rule: "PathPrefix(`/`)"
+      service: defi-service
+      entryPoints:
+        - defi-direct
+      middlewares:
+        - defi-header
+
   services:
     # Services for each router
     pacman-service:
