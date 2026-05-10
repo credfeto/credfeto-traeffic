@@ -58,6 +58,7 @@ allow_ipv6_range() {
 
 allow_public_udp_port() {
     port=$1
+    [ -n "$port" ] || die "Port parameter required"
     if ! firewall-cmd --permanent --query-port="${port}/udp" 2>/dev/null; then
         firewall-cmd --permanent --add-port="${port}/udp" || die "Failed to add UDP firewall rule for port ${port}"
     fi
@@ -77,7 +78,7 @@ for range in $IPV6_RANGES; do
     allow_ipv6_range "$range" udp
 done
 
-# 4. Firewall rule - allow UDP 41641 from any source
+# 4. Firewall rule - required to allow UDP 41641 from any source
 allow_public_udp_port 41641
 
 firewall-cmd --reload || die "Failed to reload firewall"
