@@ -56,6 +56,20 @@ allow_ipv6_range() {
     fi
 }
 
+allow_public_udp_port() {
+    port=$1
+    [ -n "$port" ] || die "Port parameter required"
+    case "$port" in
+        *[!0-9]*)
+            die "Port must be numeric: ${port}"
+            ;;
+    esac
+    [ "$port" -ge 1 ] && [ "$port" -le 65535 ] || die "Port out of range: ${port}"
+    if ! firewall-cmd --permanent --query-port="${port}/udp"; then
+        firewall-cmd --permanent --add-port="${port}/udp" || die "Failed to add UDP firewall rule for port ${port}"
+    fi
+}
+
 # 3. Firewall rules - allow private networks to reach port 443 TCP/UDP
 IPV4_RANGES="10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
 IPV6_RANGES="fc00::/7 fe80::/10"
@@ -70,8 +84,10 @@ for range in $IPV6_RANGES; do
     allow_ipv6_range "$range" udp
 done
 
+allow_public_udp_port 52363
+
 firewall-cmd --reload || die "Failed to reload firewall"
 
-# 4. Pull latest images and restart containers
+# 5. Pull latest images and restart containers
 docker compose pull || die "Failed to pull docker images"
 docker compose up -d || die "Failed to start containers"
