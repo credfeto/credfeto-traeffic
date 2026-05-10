@@ -56,7 +56,6 @@ allow_ipv6_range() {
     fi
 }
 
-# Required change: UDP 41641 must be reachable from any source.
 allow_public_udp_port() {
     port=$1
     [ -n "$port" ] || die "Port parameter required"
@@ -85,7 +84,7 @@ for range in $IPV6_RANGES; do
     allow_ipv6_range "$range" udp
 done
 
-allow_public_udp_port 41641
+allow_public_udp_port 52363
 
 firewall-cmd --reload || die "Failed to reload firewall"
 
