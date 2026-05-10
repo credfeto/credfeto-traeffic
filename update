@@ -56,13 +56,12 @@ allow_ipv6_range() {
     fi
 }
 
-# Required by issue "whitelist udp port 41641 in firewallcmd":
-# UDP 41641 must be reachable from any source.
+# Required change: UDP 41641 must be reachable from any source.
 allow_public_udp_port() {
     port=$1
     [ -n "$port" ] || die "Port parameter required"
     case "$port" in
-        ''|*[!0-9]*)
+        *[!0-9]*)
             die "Port must be numeric: ${port}"
             ;;
     esac
