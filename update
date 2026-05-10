@@ -56,6 +56,13 @@ allow_ipv6_range() {
     fi
 }
 
+allow_udp_port_from_any() {
+    port=$1
+    if ! firewall-cmd --permanent --query-port="${port}/udp" 2>/dev/null; then
+        firewall-cmd --permanent --add-port="${port}/udp" || die "Failed to add UDP firewall rule for port ${port}"
+    fi
+}
+
 # 3. Firewall rules - allow private networks to reach port 443 TCP/UDP
 IPV4_RANGES="10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
 IPV6_RANGES="fc00::/7 fe80::/10"
@@ -69,6 +76,8 @@ for range in $IPV6_RANGES; do
     allow_ipv6_range "$range" tcp
     allow_ipv6_range "$range" udp
 done
+
+allow_udp_port_from_any 41641
 
 firewall-cmd --reload || die "Failed to reload firewall"
 
