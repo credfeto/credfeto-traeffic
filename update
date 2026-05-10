@@ -56,10 +56,11 @@ allow_ipv6_range() {
     fi
 }
 
+# Required by issue request: UDP 41641 must be reachable from any source.
 allow_public_udp_port() {
     port=$1
     [ -n "$port" ] || die "Port parameter required"
-    if ! firewall-cmd --permanent --query-port="${port}/udp" 2>/dev/null; then
+    if ! firewall-cmd --permanent --query-port="${port}/udp"; then
         firewall-cmd --permanent --add-port="${port}/udp" || die "Failed to add UDP firewall rule for port ${port}"
     fi
 }
