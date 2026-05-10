@@ -56,7 +56,7 @@ allow_ipv6_range() {
     fi
 }
 
-allow_udp_port_from_any() {
+allow_public_udp_port() {
     port=$1
     if ! firewall-cmd --permanent --query-port="${port}/udp" 2>/dev/null; then
         firewall-cmd --permanent --add-port="${port}/udp" || die "Failed to add UDP firewall rule for port ${port}"
@@ -77,10 +77,11 @@ for range in $IPV6_RANGES; do
     allow_ipv6_range "$range" udp
 done
 
-allow_udp_port_from_any 41641
+# 4. Firewall rule - allow UDP 41641 from any source
+allow_public_udp_port 41641
 
 firewall-cmd --reload || die "Failed to reload firewall"
 
-# 4. Pull latest images and restart containers
+# 5. Pull latest images and restart containers
 docker compose pull || die "Failed to pull docker images"
 docker compose up -d || die "Failed to start containers"
