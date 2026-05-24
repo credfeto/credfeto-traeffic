@@ -44,7 +44,7 @@ PHOTOS_LOCAL_SECRET=your_photos_shared_secret
 | `CLOUDFLARE_EMAIL` | Yes | `traefik` | Used to populate Traefik ACME email (`TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL`) for Let's Encrypt registration. |
 | `CF_DNS_API_TOKEN` | Yes | `traefik` | Cloudflare DNS API token used by the ACME DNS challenge provider. |
 | `CLOUDFLARE_TUNNEL_TOKEN` | Yes (if running `cloudflare` service) | `cloudflare` | Token passed to `cloudflared tunnel run --token ...` to establish the Cloudflare Tunnel. |
-| `PHOTOS_LOCAL_SECRET` | Yes | `config-gen` | Shared secret injected into the photos router rule. Requests to port 450 must include `X-Local: <value>` matching this secret; others receive 401. Configure Cloudflare Tunnel to add this header on all requests to the photos origin. |
+| `PHOTOS_LOCAL_SECRET` | Yes | `./update` | Shared secret injected into the photos router rule. Requests to port 450 must include `X-Local: <value>` matching this secret; unauthorized requests are rejected. Configure Cloudflare Tunnel to add this header on all requests to the photos origin. |
 | `TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL` | Set by compose | `traefik` container environment | Derived from `${CLOUDFLARE_EMAIL}` in `docker-compose.yml`; no separate `.env` entry is required. |
 
 ### 3. Start Traefik

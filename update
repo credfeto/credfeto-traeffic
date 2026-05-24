@@ -37,10 +37,10 @@ git pull || die "Failed to pull latest changes"
 # 2. Generate dynamic_conf.yml from template
 info "Generating dynamic config from template..."
 PHOTOS_LOCAL_SECRET=$(grep -E "^PHOTOS_LOCAL_SECRET=" .env | cut -d '=' -f2-)
-awk -v secret="${PHOTOS_LOCAL_SECRET}" \
-    '{gsub(/\$\{PHOTOS_LOCAL_SECRET\}/, secret)}1' \
-    dynamic_conf.yml.template > dynamic_conf.yml \
+PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
+    < dynamic_conf.yml.template > dynamic_conf.yml \
     || die "Failed to generate dynamic_conf.yml"
+chmod 600 dynamic_conf.yml || die "Failed to set permissions on dynamic_conf.yml"
 success "dynamic_conf.yml generated"
 
 # 3. Create acme data directory and docker volume
