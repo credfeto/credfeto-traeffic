@@ -690,6 +690,7 @@ http:
         traefik-api-token-middleware:
           authenticationHeader: true
           authenticationHeaderName: X-Local
+          removeTokenNameOnFailure: true
           tokens:
             - "${PHOTOS_LOCAL_SECRET}"
 

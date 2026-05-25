@@ -60,13 +60,13 @@ The `update` script validates `.env`, generates `dynamic_conf.yml` from the temp
 | File | Purpose |
 | ---- | ------- |
 | `traefik.yml` | Static configuration — entrypoints, ACME, providers |
-| `dynamic_conf.yml.template` | Dynamic configuration template — routers, services, middlewares; committed to git |
+| `dynamic_conf.template.yml` | Dynamic configuration template — routers, services, middlewares; committed to git |
 | `dynamic_conf.yml` | Generated from template by `./update`; gitignored, never committed |
 | `traefik-acme` (Docker volume) | Let's Encrypt certificate storage |
 
 ## Adding a new service
 
-In `dynamic_conf.yml.template`, add a router, service, and middleware following the existing pattern:
+In `dynamic_conf.template.yml`, add a router, service, and middleware following the existing pattern:
 
 ```yaml
 http:
@@ -99,7 +99,7 @@ Traefik watches `dynamic_conf.yml` for changes and reloads automatically — no 
 
 ## DNS services
 
-The following DNS routes are configured in `dynamic_conf.yml.template`:
+The following DNS routes are configured in `dynamic_conf.template.yml`:
 
 | Hostname | Upstream service target |
 | -------- | ----------------------- |
