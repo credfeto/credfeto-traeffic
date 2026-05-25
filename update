@@ -38,7 +38,7 @@ git pull || die "Failed to pull latest changes"
 info "Generating dynamic config from template..."
 PHOTOS_LOCAL_SECRET=$(grep -E "^PHOTOS_LOCAL_SECRET=" .env | cut -d '=' -f2-)
 PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
-    < dynamic_conf.yml.template > dynamic_conf.yml \
+    < dynamic_conf.template.yml > dynamic_conf.yml \
     || die "Failed to generate dynamic_conf.yml"
 chmod 600 dynamic_conf.yml || die "Failed to set permissions on dynamic_conf.yml"
 success "dynamic_conf.yml generated"
