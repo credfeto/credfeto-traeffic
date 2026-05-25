@@ -3,9 +3,16 @@
 set -e
 
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
 }
 
 check_env_var() {
@@ -21,11 +28,22 @@ check_env_var() {
 check_env_var CLOUDFLARE_EMAIL
 check_env_var CF_DNS_API_TOKEN
 check_env_var CLOUDFLARE_TUNNEL_TOKEN
+check_env_var PHOTOS_LOCAL_SECRET
 
 # 1. Pull latest config
+info "Pulling latest config..."
 git pull || die "Failed to pull latest changes"
 
-# 2. Create acme data directory and docker volume
+# 2. Generate dynamic_conf.yml from template
+info "Generating dynamic config from template..."
+PHOTOS_LOCAL_SECRET=$(grep -E "^PHOTOS_LOCAL_SECRET=" .env | cut -d '=' -f2-)
+PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
+    < dynamic_conf.yml.template > dynamic_conf.yml \
+    || die "Failed to generate dynamic_conf.yml"
+chmod 600 dynamic_conf.yml || die "Failed to set permissions on dynamic_conf.yml"
+success "dynamic_conf.yml generated"
+
+# 3. Create acme data directory and docker volume
 if [ ! -d /data/acme ]; then
     mkdir -p /data/acme || die "Failed to create /data/acme"
     chmod 700 /data/acme || die "Failed to set permissions on /data/acme"
@@ -44,7 +62,8 @@ allow_ipv4_range() {
     range=$1
     proto=$2
     if ! firewall-cmd --query-rich-rule="rule family='ipv4' source address='$range' port port='443' protocol='$proto' accept" 2>/dev/null; then
-        firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='$range' port port='443' protocol='$proto' accept" || die "Failed to add IPv4 $proto firewall rule for $range"
+        firewall-cmd --permanent --add-rich-rule="rule family='ipv4' source address='$range' port port='443' protocol='$proto' accept" \
+            || die "Failed to add IPv4 $proto firewall rule for $range"
     fi
 }
 
@@ -52,7 +71,8 @@ allow_ipv6_range() {
     range=$1
     proto=$2
     if ! firewall-cmd --query-rich-rule="rule family='ipv6' source address='$range' port port='443' protocol='$proto' accept" 2>/dev/null; then
-        firewall-cmd --permanent --add-rich-rule="rule family='ipv6' source address='$range' port port='443' protocol='$proto' accept" || die "Failed to add IPv6 $proto firewall rule for $range"
+        firewall-cmd --permanent --add-rich-rule="rule family='ipv6' source address='$range' port port='443' protocol='$proto' accept" \
+            || die "Failed to add IPv6 $proto firewall rule for $range"
     fi
 }
 
@@ -70,7 +90,7 @@ allow_public_udp_port() {
     fi
 }
 
-# 3. Firewall rules - allow private networks to reach port 443 TCP/UDP
+# 4. Firewall rules - allow private networks to reach port 443 TCP/UDP
 IPV4_RANGES="10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
 IPV6_RANGES="fc00::/7 fe80::/10"
 
@@ -89,5 +109,8 @@ allow_public_udp_port 52363
 firewall-cmd --reload || die "Failed to reload firewall"
 
 # 5. Pull latest images and restart containers
+info "Pulling latest images..."
 docker compose pull || die "Failed to pull docker images"
+info "Starting containers..."
 docker compose up -d || die "Failed to start containers"
+success "Done"

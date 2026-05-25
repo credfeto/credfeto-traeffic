@@ -1,6 +1,6 @@
 # Traefik Setup
 
-Traefik v2.9 reverse proxy using Let's Encrypt TLS via Cloudflare DNS challenge.
+Traefik v3 reverse proxy using Let's Encrypt TLS via Cloudflare DNS challenge.
 
 ## Prerequisites
 
@@ -32,6 +32,7 @@ Edit `.env`:
 CLOUDFLARE_EMAIL=your@email.com
 CF_DNS_API_TOKEN=your_cloudflare_api_token
 CLOUDFLARE_TUNNEL_TOKEN=your_cloudflare_tunnel_token
+PHOTOS_LOCAL_SECRET=your_photos_shared_secret
 ```
 
 `.env` is gitignored and will not be committed.
@@ -43,25 +44,29 @@ CLOUDFLARE_TUNNEL_TOKEN=your_cloudflare_tunnel_token
 | `CLOUDFLARE_EMAIL` | Yes | `traefik` | Used to populate Traefik ACME email (`TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL`) for Let's Encrypt registration. |
 | `CF_DNS_API_TOKEN` | Yes | `traefik` | Cloudflare DNS API token used by the ACME DNS challenge provider. |
 | `CLOUDFLARE_TUNNEL_TOKEN` | Yes (if running `cloudflare` service) | `cloudflare` | Token passed to `cloudflared tunnel run --token ...` to establish the Cloudflare Tunnel. |
+| `PHOTOS_LOCAL_SECRET` | Yes | `./update` | Shared secret injected into the photos router rule. Requests to port 450 must include `X-Local: <value>` matching this secret; unauthorized requests are rejected. Configure Cloudflare Tunnel to add this header on all requests to the photos origin. |
 | `TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL` | Set by compose | `traefik` container environment | Derived from `${CLOUDFLARE_EMAIL}` in `docker-compose.yml`; no separate `.env` entry is required. |
 
 ### 3. Start Traefik
 
 ```bash
-docker compose up -d
+./update
 ```
+
+The `update` script validates `.env`, generates `dynamic_conf.yml` from the template, sets up volumes and firewall rules, pulls images, and starts the containers.
 
 ## Configuration files
 
 | File | Purpose |
 | ---- | ------- |
 | `traefik.yml` | Static configuration — entrypoints, ACME, providers |
-| `dynamic_conf.yml` | Dynamic configuration — routers, services, middlewares |
+| `dynamic_conf.yml.template` | Dynamic configuration template — routers, services, middlewares; committed to git |
+| `dynamic_conf.yml` | Generated from template by `./update`; gitignored, never committed |
 | `traefik-acme` (Docker volume) | Let's Encrypt certificate storage |
 
 ## Adding a new service
 
-In `dynamic_conf.yml`, add a router, service, and middleware following the existing pattern:
+In `dynamic_conf.yml.template`, add a router, service, and middleware following the existing pattern:
 
 ```yaml
 http:
@@ -90,11 +95,11 @@ http:
           Host: "my-service.local"
 ```
 
-Traefik watches `dynamic_conf.yml` for changes and reloads automatically — no restart required.
+Traefik watches `dynamic_conf.yml` for changes and reloads automatically — no restart required for route or service changes. To apply template changes that alter `${PHOTOS_LOCAL_SECRET}` or other substituted values, re-run `./update`.
 
 ## DNS services
 
-The following DNS routes are configured in `dynamic_conf.yml`:
+The following DNS routes are configured in `dynamic_conf.yml.template`:
 
 | Hostname | Upstream service target |
 | -------- | ----------------------- |
@@ -147,7 +152,16 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 ### Media
 
-- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTP direct)
+- `photos.markridgwell.com` → `http://192.168.150.154:2283` — also available on port **450** (HTTP direct, X-Local header required)
+
+#### Photos — X-Local header authentication (port 450)
+
+Port 450 is the Cloudflare Tunnel origin for `photos.markridgwell.com`. To prevent direct access that bypasses Cloudflare, Traefik validates a shared-secret header on all requests arriving on this port:
+
+- Requests with `X-Local: <PHOTOS_LOCAL_SECRET>` are forwarded to the Immich backend.
+- All other requests are rejected by the `traefik-api-token-middleware` plugin.
+
+**Configuration:** Set `PHOTOS_LOCAL_SECRET` in `.env`, then configure the Cloudflare Tunnel origin rule for `photos.markridgwell.com` to add the request header `X-Local: <same value>`. The Cloudflare dashboard path is: **Zero Trust → Networks → Tunnels → [your tunnel] → Public Hostnames → photos.markridgwell.com → Additional application settings → HTTP Settings → Request headers**.
 
 ### NuGet Registries
 

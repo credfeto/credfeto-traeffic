@@ -402,6 +402,7 @@ http:
         - photos
       middlewares:
         - photos-header
+        - photos-local-check
 
     aur-direct-router:
       rule: "Host(`aur.markridgwell.com`)"
@@ -683,6 +684,14 @@ http:
       headers:
         customRequestHeaders:
           Host: "photos.markridgwell.com"
+
+    photos-local-check:
+      plugin:
+        traefik-api-token-middleware:
+          authenticationHeader: true
+          authenticationHeaderName: X-Local
+          tokens:
+            - "${PHOTOS_LOCAL_SECRET}"
 
     homeassistant-header:
       headers:
