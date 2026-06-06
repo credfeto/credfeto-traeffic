@@ -2,6 +2,12 @@
 
 Traefik v3 reverse proxy using Let's Encrypt TLS via Cloudflare DNS challenge.
 
+## Resources
+
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+
 ## Prerequisites
 
 - Docker and Docker Compose installed
