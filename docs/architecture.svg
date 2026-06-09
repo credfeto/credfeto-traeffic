@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="340" viewBox="0 0 420 340">
+  <style>
+    text { font-family: monospace; font-size: 14px; fill: #24292f; }
+    .folder { fill: #f6c90e; }
+    .root { font-weight: bold; font-size: 15px; }
+    .line { stroke: #6e7781; stroke-width: 1.5; }
+  </style>
+
+  <!-- Background -->
+  <rect width="420" height="340" rx="8" fill="#f8f9fa" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="20" y="30" class="root" fill="#0969da">credfeto-traefik/ — Folder Structure</text>
+  <line x1="20" y1="38" x2="400" y2="38" stroke="#d1d5db" stroke-width="1"/>
+
+  <!-- Root -->
+  <text x="20" y="68">&#x1F4C2; credfeto-traefik/</text>
+
+  <!-- .github/ -->
+  <line x1="38" y1="74" x2="38" y2="166" class="line"/>
+  <line x1="38" y1="96" x2="56" y2="96" class="line"/>
+  <text x="60" y="100">&#x1F4C2; .github/</text>
+
+  <!-- .github children -->
+  <line x1="76" y1="106" x2="76" y2="166" class="line"/>
+  <line x1="76" y1="122" x2="94" y2="122" class="line"/>
+  <text x="98" y="126">&#x1F4C2; actions/</text>
+
+  <line x1="76" y1="136" x2="94" y2="136" class="line"/>
+  <text x="98" y="140">&#x1F4C2; ISSUE_TEMPLATE/</text>
+
+  <line x1="76" y1="150" x2="94" y2="150" class="line"/>
+  <text x="98" y="154">&#x1F4C2; linters/</text>
+
+  <line x1="76" y1="164" x2="94" y2="164" class="line"/>
+  <text x="98" y="168">&#x1F4C2; workflows/</text>
+
+  <!-- ai/ -->
+  <line x1="38" y1="180" x2="56" y2="180" class="line"/>
+  <text x="60" y="184">&#x1F4C2; ai/</text>
+
+  <!-- ai children -->
+  <line x1="76" y1="190" x2="76" y2="218" class="line"/>
+  <line x1="76" y1="204" x2="94" y2="204" class="line"/>
+  <text x="98" y="208">&#x1F4C2; global/</text>
+
+  <line x1="76" y1="218" x2="94" y2="218" class="line"/>
+  <text x="98" y="222">&#x1F4C2; local/</text>
+
+  <!-- docs/ -->
+  <line x1="38" y1="234" x2="56" y2="234" class="line"/>
+  <text x="60" y="238">&#x1F4C2; docs/</text>
+
+  <!-- Legend -->
+  <line x1="20" y1="262" x2="400" y2="262" stroke="#d1d5db" stroke-width="1"/>
+  <text x="20" y="285" font-size="12" fill="#6e7781">Individual files omitted. See README.md for project overview.</text>
+  <text x="20" y="304" font-size="12" fill="#6e7781">ai/global/ — shared AI instruction files</text>
+  <text x="20" y="322" font-size="12" fill="#6e7781">ai/local/  — project-specific AI instruction files</text>
+</svg>
