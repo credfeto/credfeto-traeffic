@@ -52,6 +52,9 @@ http:
     git-workflow:
       insecureSkipVerify: true
       serverName: "git-workflow.markridgwell.com"
+    cctv:
+      insecureSkipVerify: true
+      serverName: "cctv.local"
 
   routers:
     # Dashboard router
@@ -379,6 +382,16 @@ http:
       middlewares:
         - git-workflow-header
 
+    cctv-router:
+      rule: "Host(`cctv.markridgwell.com`)"
+      service: cctv-service
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - cctv-header
+
     # Direct port routers (plain HTTP — TLS terminated by Cloudflare Tunnel)
     npm-direct-router:
       rule: "Host(`npm.markridgwell.com`)"
@@ -659,6 +672,12 @@ http:
         servers:
           - url: "https://192.168.150.15:8081"
 
+    cctv-service:
+      loadBalancer:
+        serversTransport: cctv
+        servers:
+          - url: "https://192.168.60.180"
+
   middlewares:
     # Middleware for each header
     pacman-header:
@@ -810,3 +829,8 @@ http:
       headers:
         customRequestHeaders:
           Host: "git-workflow.markridgwell.com"
+
+    cctv-header:
+      headers:
+        customRequestHeaders:
+          Host: "cctv.local"
