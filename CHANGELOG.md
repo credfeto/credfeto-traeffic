@@ -12,6 +12,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Security
 ### Added
 - docs/ folder with architecture diagram showing repository folder structure
+- cctv.markridgwell.com host routing to 192.168.60.180 over self-signed TLS
 ### Fixed
 - YAML document start markers added to docker-compose.yml, dynamic_conf.template.yml, and traefik.yml to satisfy ansible-lint
 ### Changed
