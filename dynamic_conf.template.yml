@@ -55,6 +55,9 @@ http:
     cctv:
       insecureSkipVerify: true
       serverName: "cctv.local"
+    keys:
+      insecureSkipVerify: true
+      serverName: "keys.local"
 
   routers:
     # Dashboard router
@@ -392,6 +395,16 @@ http:
       middlewares:
         - cctv-header
 
+    keys-router:
+      rule: "Host(`keys.markridgwell.com`)"
+      service: keys-service
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - keys-header
+
     # Direct port routers (plain HTTP — TLS terminated by Cloudflare Tunnel)
     npm-direct-router:
       rule: "Host(`npm.markridgwell.com`)"
@@ -678,6 +691,12 @@ http:
         servers:
           - url: "https://192.168.60.180"
 
+    keys-service:
+      loadBalancer:
+        serversTransport: keys
+        servers:
+          - url: "https://192.168.150.220:8081"
+
   middlewares:
     # Middleware for each header
     pacman-header:
@@ -834,3 +853,8 @@ http:
       headers:
         customRequestHeaders:
           Host: "cctv.local"
+
+    keys-header:
+      headers:
+        customRequestHeaders:
+          Host: "keys.markridgwell.com"
