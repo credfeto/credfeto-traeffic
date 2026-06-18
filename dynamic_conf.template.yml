@@ -557,7 +557,7 @@ http:
       loadBalancer:
         serversTransport: defi
         servers:
-        - url: "https://192.168.150.12:8081"
+        - url: "https://192.168.150.12"
 
     ollama-service:
       loadBalancer:
