@@ -154,7 +154,7 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 - `home.markridgwell.com` → `http://192.168.150.150:8080` — also available on port **446** (HTTP direct)
 - `homeassistant.markridgwell.com` → `http://192.168.34.8:8123`
 - `audiobookshelf.markridgwell.com` → `http://192.168.150.16:8080`
-- `defi.markridgwell.com` → `https://192.168.150.12` — also available on port **447** (HTTP direct)
+- `defi.markridgwell.com` → `https://192.168.150.124` — also available on port **447** (HTTP direct)
 
 ### Media
 
