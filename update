@@ -37,6 +37,8 @@ git pull || die "Failed to pull latest changes"
 # 2. Generate dynamic_conf.yml from template
 info "Generating dynamic config from template..."
 PHOTOS_LOCAL_SECRET=$(grep -E "^PHOTOS_LOCAL_SECRET=" .env | cut -d '=' -f2-)
+# envsubst requires the literal variable-name string here (not shell-expanded) to know which variables to substitute
+# shellcheck disable=SC2016
 PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
     < dynamic_conf.template.yml > dynamic_conf.yml \
     || die "Failed to generate dynamic_conf.yml"
