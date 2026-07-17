@@ -109,12 +109,12 @@ The following DNS routes are configured in `dynamic_conf.template.yml`:
 
 | Hostname | Upstream service target |
 | -------- | ----------------------- |
-| `dns.markridgwell.com` | `https://192.168.42.101`, `https://192.168.42.102`, `https://192.168.42.103`, `https://192.168.42.104`, `https://192.168.42.105` (each dual-stack with a `2a02:8010:61d5:42::101`-`105` IPv6 address) |
-| `dns-01.markridgwell.com` | `https://192.168.42.101:53443` / `https://[2a02:8010:61d5:42::101]:53443` |
-| `dns-02.markridgwell.com` | `https://192.168.42.102:53443` / `https://[2a02:8010:61d5:42::102]:53443` |
-| `dns-03.markridgwell.com` | `https://192.168.42.103:53443` / `https://[2a02:8010:61d5:42::103]:53443` |
-| `dns-04.markridgwell.com` | `https://192.168.42.104:53443` / `https://[2a02:8010:61d5:42::104]:53443` |
-| `dns-05.markridgwell.com` | `https://192.168.42.105:53443` / `https://[2a02:8010:61d5:42::105]:53443` |
+| `dns.markridgwell.com` | `https://192.168.42.101`, `https://192.168.42.102`, `https://192.168.42.103`, `https://192.168.42.104`, `https://192.168.42.105` |
+| `dns-01.markridgwell.com` | `https://192.168.42.101:53443` |
+| `dns-02.markridgwell.com` | `https://192.168.42.102:53443` |
+| `dns-03.markridgwell.com` | `https://192.168.42.103:53443` |
+| `dns-04.markridgwell.com` | `https://192.168.42.104:53443` |
+| `dns-05.markridgwell.com` | `https://192.168.42.105:53443` |
 
 ### TLS and Host behavior for `dns.markridgwell.com`
 
