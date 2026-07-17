@@ -14,9 +14,11 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - docs/ folder with architecture diagram showing repository folder structure
 - cctv.markridgwell.com host routing to 192.168.60.180 over self-signed TLS
 - keys.markridgwell.com zone pointing at 192.168.150.220:8081 using the wildcard certificate
+- dns-05.markridgwell.com host routing to dual-stack backend 192.168.42.105 / 2a02:8010:61d5:42::105
 ### Fixed
 - YAML document start markers added to docker-compose.yml, dynamic_conf.template.yml, and traefik.yml to satisfy ansible-lint
 ### Changed
+- Re-addressed dns-01..dns-04 backends to 192.168.42.101-104 (was .251-.254) with new dual-stack IPv6 addresses 2a02:8010:61d5:42::101-104
 ### Deprecated
 ### Removed
 ### Deployment Changes
