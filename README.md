@@ -109,11 +109,12 @@ The following DNS routes are configured in `dynamic_conf.template.yml`:
 
 | Hostname | Upstream service target |
 | -------- | ----------------------- |
-| `dns.markridgwell.com` | `https://192.168.42.251`, `https://192.168.42.252`, `https://192.168.42.253`, `https://192.168.42.254` |
-| `dns-01.markridgwell.com` | `http://192.168.42.251:3000` |
-| `dns-02.markridgwell.com` | `http://192.168.42.252:3000` |
-| `dns-03.markridgwell.com` | `http://192.168.42.253:3000` |
-| `dns-04.markridgwell.com` | `http://192.168.42.254:3000` |
+| `dns.markridgwell.com` | `https://192.168.42.101`, `https://192.168.42.102`, `https://192.168.42.103`, `https://192.168.42.104`, `https://192.168.42.105` (each dual-stack with a `2a02:8010:61d5:42::101`-`105` IPv6 address) |
+| `dns-01.markridgwell.com` | `https://192.168.42.101:53443` / `https://[2a02:8010:61d5:42::101]:53443` |
+| `dns-02.markridgwell.com` | `https://192.168.42.102:53443` / `https://[2a02:8010:61d5:42::102]:53443` |
+| `dns-03.markridgwell.com` | `https://192.168.42.103:53443` / `https://[2a02:8010:61d5:42::103]:53443` |
+| `dns-04.markridgwell.com` | `https://192.168.42.104:53443` / `https://[2a02:8010:61d5:42::104]:53443` |
+| `dns-05.markridgwell.com` | `https://192.168.42.105:53443` / `https://[2a02:8010:61d5:42::105]:53443` |
 
 ### TLS and Host behavior for `dns.markridgwell.com`
 
@@ -122,7 +123,7 @@ The following DNS routes are configured in `dynamic_conf.template.yml`:
 - `serverName: "dns.markridgwell.com"` is set so SNI matches the backend certificate name.
 - Middleware `dns-header` sets `Host: dns.markridgwell.com` on forwarded requests.
 
-The `dns-01` to `dns-04` routes forward to HTTP backends on port `3000` and each has a host-specific header middleware.
+The `dns-01` to `dns-05` routes forward to HTTPS backends on port `53443` via the shared `serversTransports.dns-admin` transport, and each has a host-specific header middleware.
 
 ## Dashboard
 
