@@ -375,6 +375,16 @@ http:
       middlewares:
         - dns-05-header
 
+    dns-06-router:
+      rule: "Host(`dns-06.markridgwell.com`)"
+      service: dns-06-service
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-06-header
+
     github-api-router:
       rule: "Host(`github-api.markridgwell.com`)"
       service: github-api-service
@@ -656,6 +666,7 @@ http:
           - url: "https://192.168.42.103"
           - url: "https://192.168.42.104"
           - url: "https://192.168.42.105"
+          - url: "https://192.168.42.106"
 
     dns-01-service:
       loadBalancer:
@@ -686,6 +697,12 @@ http:
         serversTransport: dns-admin
         servers:
           - url: "https://192.168.42.105:53443"
+
+    dns-06-service:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://192.168.42.106:53443"
 
     github-api-service:
       loadBalancer:
@@ -860,6 +877,11 @@ http:
       headers:
         customRequestHeaders:
           Host: "dns-05.markridgwell.com"
+
+    dns-06-header:
+      headers:
+        customRequestHeaders:
+          Host: "dns-06.markridgwell.com"
 
     github-api-header:
       headers:
