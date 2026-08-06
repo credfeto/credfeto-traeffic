@@ -315,8 +315,20 @@ http:
       middlewares:
         - dev-cache-02-header
 
+    dns-router-v6:
+      rule: "Host(`dns.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-header
+
     dns-router:
       rule: "Host(`dns.markridgwell.com`)"
+      priority: 1
       service: dns-service
       entryPoints:
         - web-general
@@ -325,8 +337,20 @@ http:
       middlewares:
         - dns-header
 
+    dns-01-router-v6:
+      rule: "Host(`dns-01.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-01-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-01-header
+
     dns-01-router:
       rule: "Host(`dns-01.markridgwell.com`)"
+      priority: 1
       service: dns-01-service
       entryPoints:
         - web-general
@@ -335,8 +359,20 @@ http:
       middlewares:
         - dns-01-header
 
+    dns-02-router-v6:
+      rule: "Host(`dns-02.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-02-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-02-header
+
     dns-02-router:
       rule: "Host(`dns-02.markridgwell.com`)"
+      priority: 1
       service: dns-02-service
       entryPoints:
         - web-general
@@ -345,8 +381,20 @@ http:
       middlewares:
         - dns-02-header
 
+    dns-03-router-v6:
+      rule: "Host(`dns-03.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-03-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-03-header
+
     dns-03-router:
       rule: "Host(`dns-03.markridgwell.com`)"
+      priority: 1
       service: dns-03-service
       entryPoints:
         - web-general
@@ -355,8 +403,20 @@ http:
       middlewares:
         - dns-03-header
 
+    dns-04-router-v6:
+      rule: "Host(`dns-04.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-04-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-04-header
+
     dns-04-router:
       rule: "Host(`dns-04.markridgwell.com`)"
+      priority: 1
       service: dns-04-service
       entryPoints:
         - web-general
@@ -365,8 +425,20 @@ http:
       middlewares:
         - dns-04-header
 
+    dns-05-router-v6:
+      rule: "Host(`dns-05.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-05-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-05-header
+
     dns-05-router:
       rule: "Host(`dns-05.markridgwell.com`)"
+      priority: 1
       service: dns-05-service
       entryPoints:
         - web-general
@@ -375,8 +447,20 @@ http:
       middlewares:
         - dns-05-header
 
+    dns-06-router-v6:
+      rule: "Host(`dns-06.markridgwell.com`) && ClientIP(`::/0`)"
+      priority: 100
+      service: dns-06-service-v6
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - dns-06-header
+
     dns-06-router:
       rule: "Host(`dns-06.markridgwell.com`)"
+      priority: 1
       service: dns-06-service
       entryPoints:
         - web-general
@@ -668,11 +752,28 @@ http:
           - url: "https://192.168.42.105"
           - url: "https://192.168.42.106"
 
+    dns-service-v6:
+      loadBalancer:
+        serversTransport: dns
+        servers:
+          - url: "https://[2a02:8010:61d5:42::101]"
+          - url: "https://[2a02:8010:61d5:42::102]"
+          - url: "https://[2a02:8010:61d5:42::103]"
+          - url: "https://[2a02:8010:61d5:42::104]"
+          - url: "https://[2a02:8010:61d5:42::105]"
+          - url: "https://[2a02:8010:61d5:42::106]"
+
     dns-01-service:
       loadBalancer:
         serversTransport: dns-admin
         servers:
           - url: "https://192.168.42.101:53443"
+
+    dns-01-service-v6:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://[2a02:8010:61d5:42::101]:53443"
 
     dns-02-service:
       loadBalancer:
@@ -680,11 +781,23 @@ http:
         servers:
           - url: "https://192.168.42.102:53443"
 
+    dns-02-service-v6:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://[2a02:8010:61d5:42::102]:53443"
+
     dns-03-service:
       loadBalancer:
         serversTransport: dns-admin
         servers:
           - url: "https://192.168.42.103:53443"
+
+    dns-03-service-v6:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://[2a02:8010:61d5:42::103]:53443"
 
     dns-04-service:
       loadBalancer:
@@ -692,17 +805,35 @@ http:
         servers:
           - url: "https://192.168.42.104:53443"
 
+    dns-04-service-v6:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://[2a02:8010:61d5:42::104]:53443"
+
     dns-05-service:
       loadBalancer:
         serversTransport: dns-admin
         servers:
           - url: "https://192.168.42.105:53443"
 
+    dns-05-service-v6:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://[2a02:8010:61d5:42::105]:53443"
+
     dns-06-service:
       loadBalancer:
         serversTransport: dns-admin
         servers:
           - url: "https://192.168.42.106:53443"
+
+    dns-06-service-v6:
+      loadBalancer:
+        serversTransport: dns-admin
+        servers:
+          - url: "https://[2a02:8010:61d5:42::106]:53443"
 
     github-api-service:
       loadBalancer:
