@@ -46,9 +46,17 @@ services:
   watchtower:
     image: nickfedor/watchtower:latest
     container_name: watchtower
+    restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     command: --interval 86400
+
+networks:
+  default:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: "fd8a:1b3c:6e43::/64"
 
 volumes:
   traefik-acme:
