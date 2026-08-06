@@ -16,8 +16,11 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - keys.markridgwell.com zone pointing at 192.168.150.220:8081 using the wildcard certificate
 - dns-05.markridgwell.com host routing to dual-stack backend 192.168.42.105 / 2a02:8010:61d5:42::105
 - dns-06.markridgwell.com host routing to backend 192.168.42.106
+- IPv6 support for the Docker network (NAT66 via the host's global address) so Traefik and backends can use IPv6
+- IPv6 backend addresses (2a02:8010:61d5:42::101-106) restored for dns.markridgwell.com and dns-01..dns-06; IPv6 clients now route to the IPv6 backend via a ClientIP()-matched router, everything else stays on IPv4
 ### Fixed
 - YAML document start markers added to docker-compose.yml, dynamic_conf.template.yml, and traefik.yml to satisfy ansible-lint
+- watchtower missing a restart policy, leaving it stopped after a Docker daemon restart
 ### Changed
 - Re-addressed dns-01..dns-04 backends to 192.168.42.101-104 (was .251-.254) with new dual-stack IPv6 addresses 2a02:8010:61d5:42::101-104
 ### Deprecated

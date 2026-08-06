@@ -107,15 +107,15 @@ Traefik watches `dynamic_conf.yml` for changes and reloads automatically — no 
 
 The following DNS routes are configured in `dynamic_conf.template.yml`:
 
-| Hostname | Upstream service target |
-| -------- | ----------------------- |
-| `dns.markridgwell.com` | `https://192.168.42.101`, `https://192.168.42.102`, `https://192.168.42.103`, `https://192.168.42.104`, `https://192.168.42.105`, `https://192.168.42.106` |
-| `dns-01.markridgwell.com` | `https://192.168.42.101:53443` |
-| `dns-02.markridgwell.com` | `https://192.168.42.102:53443` |
-| `dns-03.markridgwell.com` | `https://192.168.42.103:53443` |
-| `dns-04.markridgwell.com` | `https://192.168.42.104:53443` |
-| `dns-05.markridgwell.com` | `https://192.168.42.105:53443` |
-| `dns-06.markridgwell.com` | `https://192.168.42.106:53443` |
+| Hostname | IPv4 upstream target | IPv6 upstream target |
+| -------- | --------------------- | --------------------- |
+| `dns.markridgwell.com` | `https://192.168.42.101`, `.102`, `.103`, `.104`, `.105`, `.106` | `https://[2a02:8010:61d5:42::101]`, `::102`, `::103`, `::104`, `::105`, `::106` |
+| `dns-01.markridgwell.com` | `https://192.168.42.101:53443` | `https://[2a02:8010:61d5:42::101]:53443` |
+| `dns-02.markridgwell.com` | `https://192.168.42.102:53443` | `https://[2a02:8010:61d5:42::102]:53443` |
+| `dns-03.markridgwell.com` | `https://192.168.42.103:53443` | `https://[2a02:8010:61d5:42::103]:53443` |
+| `dns-04.markridgwell.com` | `https://192.168.42.104:53443` | `https://[2a02:8010:61d5:42::104]:53443` |
+| `dns-05.markridgwell.com` | `https://192.168.42.105:53443` | `https://[2a02:8010:61d5:42::105]:53443` |
+| `dns-06.markridgwell.com` | `https://192.168.42.106:53443` | `https://[2a02:8010:61d5:42::106]:53443` |
 
 ### TLS and Host behavior for `dns.markridgwell.com`
 
@@ -125,6 +125,10 @@ The following DNS routes are configured in `dynamic_conf.template.yml`:
 - Middleware `dns-header` sets `Host: dns.markridgwell.com` on forwarded requests.
 
 The `dns-01` to `dns-06` routes forward to HTTPS backends on port `53443` via the shared `serversTransports.dns-admin` transport, and each has a host-specific header middleware.
+
+### IPv6-aware routing
+
+Each `dns*.markridgwell.com` host has two routers: a `-v6` router matching `ClientIP(`::/0`)` at `priority: 100`, and the plain `Host()` router at `priority: 1` as the fallback. A request arriving over IPv6 matches the `-v6` router and is forwarded to the `-v6` service (the IPv6 backend addresses above); everything else — IPv4 clients, or any host without a `-v6` router defined — falls through to the plain router and IPv4 backend. This requires the client's real IP to reach Traefik unmodified; it relies on `forwardedHeaders.trustedIPs` in `traefik.yml` being scoped to private ranges only, so a public client's `ClientIP()` reflects their actual connection rather than a spoofable header.
 
 ## Dashboard
 
