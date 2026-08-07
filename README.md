@@ -157,7 +157,11 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 
 ### Monitoring
 
-- `monitoring.markridgwell.com` → `http://192.168.150.134:8428` — also available on port **457** (HTTP direct)
+- `monitoring.markridgwell.com` → `http://192.168.150.134:8428` — also available on port **457** (HTTP direct, POST only — see below)
+
+#### Monitoring — write-only direct port (457)
+
+Port 457 is the Cloudflare Tunnel origin for `monitoring.markridgwell.com`, intended for remote Telegraf agents to push metrics into VictoriaMetrics, which has no built-in authentication. The router on port 457 only matches `POST` requests (`` Method(`POST`) ``); any other method (queries, deletes, admin calls) does not match the route and is rejected. The main `:443` route is unrestricted, for querying/dashboard access.
 
 ### Home Automation
 
