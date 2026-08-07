@@ -586,7 +586,7 @@ http:
         - funfair-prerelease-nuget-header
 
     monitoring-direct-router:
-      rule: "Host(`monitoring.markridgwell.com`)"
+      rule: "Host(`monitoring.markridgwell.com`) && Method(`POST`)"
       service: monitoring-service
       entryPoints:
         - monitoring
