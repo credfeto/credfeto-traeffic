@@ -509,6 +509,16 @@ http:
       middlewares:
         - keys-header
 
+    monitoring-router:
+      rule: "Host(`monitoring.markridgwell.com`)"
+      service: monitoring-service
+      entryPoints:
+        - web-general
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - monitoring-header
+
     # Direct port routers (plain HTTP — TLS terminated by Cloudflare Tunnel)
     npm-direct-router:
       rule: "Host(`npm.markridgwell.com`)"
@@ -574,6 +584,14 @@ http:
         - funfair-prerelease-nuget
       middlewares:
         - funfair-prerelease-nuget-header
+
+    monitoring-direct-router:
+      rule: "Host(`monitoring.markridgwell.com`)"
+      service: monitoring-service
+      entryPoints:
+        - monitoring
+      middlewares:
+        - monitoring-header
 
 
   services:
@@ -862,6 +880,11 @@ http:
         servers:
           - url: "https://192.168.150.220:8081"
 
+    monitoring-service:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.150.134:8428"
+
   middlewares:
     # Middleware for each header
     pacman-header:
@@ -1033,3 +1056,8 @@ http:
       headers:
         customRequestHeaders:
           Host: "keys.markridgwell.com"
+
+    monitoring-header:
+      headers:
+        customRequestHeaders:
+          Host: "monitoring.markridgwell.com"
