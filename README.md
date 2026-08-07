@@ -155,6 +155,10 @@ All services are accessible via HTTPS on port 443 with Let's Encrypt certificate
 - `github-api.markridgwell.com` → `http://192.168.150.15:3000`
 - `git-workflow.markridgwell.com` → `https://192.168.150.15:8081`
 
+### Monitoring
+
+- `monitoring.markridgwell.com` → `http://192.168.150.134:8428` — also available on port **457** (HTTP direct)
+
 ### Home Automation
 
 - `home.markridgwell.com` → `http://192.168.150.150:8080` — also available on port **446** (HTTP direct)
@@ -221,6 +225,7 @@ route by hostname, and each rule maps to a single origin URL (including port).
 - **453** (TCP): Flathub Repository — HTTP (Cloudflare Tunnel origin)
 - **455** (TCP): FunFair NuGet Registry — HTTP (Cloudflare Tunnel origin)
 - **456** (TCP): FunFair Pre-release NuGet Registry — HTTP (Cloudflare Tunnel origin)
+- **457** (TCP): Monitoring — HTTP (Cloudflare Tunnel origin)
 
 TLS is terminated by Cloudflare on the public side. Traefik does not re-encrypt
 the internal leg from `cloudflared` to itself.

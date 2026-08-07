@@ -29,6 +29,7 @@ services:
 
       - "455:455/tcp"
       - "456:456/tcp"
+      - "457:457/tcp"
     volumes:
       - "./traefik.yml:/etc/traefik/traefik.yml"
       - "./dynamic_conf.yml:/etc/traefik/dynamic_conf.yml"
