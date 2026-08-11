@@ -747,6 +747,13 @@ http:
       loadBalancer:
         serversTransport: api-nuget
         healthCheck:
+          # hostname: is required here - health checks bypass router
+          # middleware entirely, so without it the probe's Host header is the
+          # raw IP. The :5555 backend is a single nginx instance with five
+          # SNI-selected vhosts and no default_server, so nginx falls back to
+          # its first block (builds.dotnet.local) - every /ping here was
+          # silently checking the dotnet cache-proxy instead of its own vhost.
+          hostname: api.nuget.local
           path: /ping
           interval: 30s
           timeout: 5s
@@ -758,6 +765,7 @@ http:
       loadBalancer:
         serversTransport: funfair-nuget
         healthCheck:
+          hostname: funfair.nuget.local
           path: /ping
           interval: 30s
           timeout: 5s
@@ -769,6 +777,7 @@ http:
       loadBalancer:
         serversTransport: funfair-prerelease-nuget
         healthCheck:
+          hostname: funfair-prerelease.nuget.local
           path: /ping
           interval: 30s
           timeout: 5s
@@ -779,6 +788,13 @@ http:
     npm-service:
       loadBalancer:
         serversTransport: npm
+        healthCheck:
+          # Verdaccio's health endpoint, not the cache-proxy's /ping - this is
+          # the one vhost on :5555 that isn't credfeto-cache-proxy.
+          hostname: npm.local
+          path: /-/ping
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.150.100:5555"
           - url: "https://192.168.150.101:5555"
@@ -787,6 +803,12 @@ http:
       loadBalancer:
         serversTransport: dotnet
         healthCheck:
+          # builds.dotnet.local is nginx's first `listen 5555 ssl` block, so
+          # it's already the effective default vhost - hostname: here is
+          # belt-and-braces rather than a behaviour change, but every vhost
+          # should set it explicitly rather than relying on nginx's block
+          # order.
+          hostname: builds.dotnet.local
           path: /ping
           interval: 30s
           timeout: 5s
