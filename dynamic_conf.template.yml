@@ -638,11 +638,22 @@ http:
 
     photos-service:
       loadBalancer:
+        healthCheck:
+          path: /api/server/ping
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.154:2283"
 
     homeassistant-service:
       loadBalancer:
+        healthCheck:
+          # /manifest.json is Home Assistant's one unauthenticated route
+          # (ManifestJSONView.requires_auth = False), used upstream as the
+          # public availability probe.
+          path: /manifest.json
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.34.8:8123"
 
@@ -653,6 +664,10 @@ http:
 
     home-service:
       loadBalancer:
+        healthCheck:
+          path: /api/healthz
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.150:8080"
 
@@ -678,6 +693,10 @@ http:
     defi-service:
       loadBalancer:
         serversTransport: defi
+        healthCheck:
+          path: /ping
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.150.12"
 
@@ -690,21 +709,37 @@ http:
 
     linux-cache-01-service:
       loadBalancer:
+        healthCheck:
+          path: /healthcheck
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.200:8080"
 
     linux-cache-02-service:
       loadBalancer:
+        healthCheck:
+          path: /healthcheck
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.201:8080"
 
     dev-cache-01-service:
       loadBalancer:
+        healthCheck:
+          path: /healthcheck
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.100:8080"
 
     dev-cache-02-service:
       loadBalancer:
+        healthCheck:
+          path: /healthcheck
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.101:8080"
 
@@ -959,6 +994,10 @@ http:
 
     github-api-service:
       loadBalancer:
+        healthCheck:
+          path: /health
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.15:3000"
 
@@ -975,17 +1014,34 @@ http:
     cctv-service:
       loadBalancer:
         serversTransport: cctv
+        healthCheck:
+          # Reolink's CGI API has no unauthenticated status route (every
+          # meaningful call, including GetAbility, needs a session token from
+          # cmd=Login first). Falls back to the NVR web UI's login page,
+          # served unauthenticated - same convention as the Technitium admin
+          # console. Covers both a direct 200 and a 3xx redirect to login.
+          path: /
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.60.180"
 
     keys-service:
       loadBalancer:
         serversTransport: keys
+        healthCheck:
+          path: /ping
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.150.220:8081"
 
     monitoring-service:
       loadBalancer:
+        healthCheck:
+          path: /health
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "http://192.168.150.134:8428"
 
