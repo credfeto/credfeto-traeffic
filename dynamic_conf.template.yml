@@ -901,9 +901,7 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::101]:53443"
 
-    # Composes dns-01-service-v6 and dns-01-service without mixing IPv4/IPv6
-    # hosts in one pool: tries the IPv6 pool first, and once its health
-    # check reports zero healthy servers, falls back to the IPv4 pool.
+    # See dns-service-v6-failover above for the failover rationale.
     dns-01-service-v6-failover:
       failover:
         service: dns-01-service-v6
@@ -935,9 +933,7 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::102]:53443"
 
-    # Composes dns-02-service-v6 and dns-02-service without mixing IPv4/IPv6
-    # hosts in one pool: tries the IPv6 pool first, and once its health
-    # check reports zero healthy servers, falls back to the IPv4 pool.
+    # See dns-service-v6-failover above for the failover rationale.
     dns-02-service-v6-failover:
       failover:
         service: dns-02-service-v6
@@ -969,9 +965,7 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::103]:53443"
 
-    # Composes dns-03-service-v6 and dns-03-service without mixing IPv4/IPv6
-    # hosts in one pool: tries the IPv6 pool first, and once its health
-    # check reports zero healthy servers, falls back to the IPv4 pool.
+    # See dns-service-v6-failover above for the failover rationale.
     dns-03-service-v6-failover:
       failover:
         service: dns-03-service-v6
@@ -1003,9 +997,7 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::104]:53443"
 
-    # Composes dns-04-service-v6 and dns-04-service without mixing IPv4/IPv6
-    # hosts in one pool: tries the IPv6 pool first, and once its health
-    # check reports zero healthy servers, falls back to the IPv4 pool.
+    # See dns-service-v6-failover above for the failover rationale.
     dns-04-service-v6-failover:
       failover:
         service: dns-04-service-v6
@@ -1037,9 +1029,7 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::105]:53443"
 
-    # Composes dns-05-service-v6 and dns-05-service without mixing IPv4/IPv6
-    # hosts in one pool: tries the IPv6 pool first, and once its health
-    # check reports zero healthy servers, falls back to the IPv4 pool.
+    # See dns-service-v6-failover above for the failover rationale.
     dns-05-service-v6-failover:
       failover:
         service: dns-05-service-v6
@@ -1071,9 +1061,7 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::106]:53443"
 
-    # Composes dns-06-service-v6 and dns-06-service without mixing IPv4/IPv6
-    # hosts in one pool: tries the IPv6 pool first, and once its health
-    # check reports zero healthy servers, falls back to the IPv4 pool.
+    # See dns-service-v6-failover above for the failover rationale.
     dns-06-service-v6-failover:
       failover:
         service: dns-06-service-v6
