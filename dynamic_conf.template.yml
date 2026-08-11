@@ -762,6 +762,16 @@ http:
     dns-service:
       loadBalancer:
         serversTransport: dns
+        healthCheck:
+          # Static RFC 8484 DoH GET query (base64url, no padding) for
+          # 1dot1dot1dot1.cloudflare.com A: a real wire-format DNS query is
+          # required here - Technitium's /dns-query only accepts ?dns=<query>,
+          # it does not support the application/dns-json GET convenience API.
+          path: "/dns-query?dns=AAABAAABAAAAAAAADTFkb3QxZG90MWRvdDEKY2xvdWRmbGFyZQNjb20AAAEAAQ"
+          headers:
+            Accept: "application/dns-message"
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.101"
           - url: "https://192.168.42.102"
@@ -773,6 +783,16 @@ http:
     dns-service-v6:
       loadBalancer:
         serversTransport: dns
+        healthCheck:
+          # Static RFC 8484 DoH GET query (base64url, no padding) for
+          # 1dot1dot1dot1.cloudflare.com A: a real wire-format DNS query is
+          # required here - Technitium's /dns-query only accepts ?dns=<query>,
+          # it does not support the application/dns-json GET convenience API.
+          path: "/dns-query?dns=AAABAAABAAAAAAAADTFkb3QxZG90MWRvdDEKY2xvdWRmbGFyZQNjb20AAAEAAQ"
+          headers:
+            Accept: "application/dns-message"
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::101]"
           - url: "https://[2a02:8010:61d5:42::102]"
@@ -784,72 +804,156 @@ http:
     dns-01-service:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.101:53443"
 
     dns-01-service-v6:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::101]:53443"
 
     dns-02-service:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.102:53443"
 
     dns-02-service-v6:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::102]:53443"
 
     dns-03-service:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.103:53443"
 
     dns-03-service-v6:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::103]:53443"
 
     dns-04-service:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.104:53443"
 
     dns-04-service-v6:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::104]:53443"
 
     dns-05-service:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.105:53443"
 
     dns-05-service-v6:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::105]:53443"
 
     dns-06-service:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://192.168.42.106:53443"
 
     dns-06-service-v6:
       loadBalancer:
         serversTransport: dns-admin
+        healthCheck:
+          # /api/status is unauthenticated and purpose-built for this: it
+          # always returns HTTP 200 {"status":"ok"} without touching session
+          # auth (unlike almost every other /api/* route on the console).
+          path: /api/status
+          interval: 30s
+          timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::106]:53443"
 

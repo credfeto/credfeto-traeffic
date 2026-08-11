@@ -20,6 +20,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - IPv6 support for the Docker network (NAT66 via the host's global address) so Traefik and backends can use IPv6
 - IPv6 backend addresses (2a02:8010:61d5:42::101-106) restored for dns.markridgwell.com and dns-01..dns-06; IPv6 clients now route to the IPv6 backend via a ClientIP()-matched router, everything else stays on IPv4
 - monitoring.markridgwell.com routing to 192.168.150.134:8428, with a dedicated Cloudflare Tunnel origin port (457) alongside the SNI/HTTPS route
+- Add active health checks to the DNS routers - RFC 8484 DoH probe for the DNS-over-HTTPS service and the unauthenticated /api/status probe for the Technitium admin console services, so unhealthy DNS servers are automatically taken out of rotation
 ### Fixed
 - YAML document start markers added to docker-compose.yml, dynamic_conf.template.yml, and traefik.yml to satisfy ansible-lint
 - watchtower missing a restart policy, leaving it stopped after a Docker daemon restart
