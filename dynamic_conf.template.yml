@@ -659,8 +659,17 @@ http:
 
     audiobookshelf-service:
       loadBalancer:
+        healthCheck:
+          # /healthcheck is Audiobookshelf's own unauthenticated endpoint
+          # (server/Server.js: router.get('/healthcheck', ...) -> 200).
+          path: /healthcheck
+          interval: 30s
+          timeout: 5s
         servers:
-          - url: "http://192.168.150.16:8080"
+          # Port was 8080, which is actually Dozzle on this host - Audiobookshelf
+          # itself is published on 13378 (docker-compose.yml: "13378:80", host:container;
+          # no network_mode: host, so 80 is unreachable from outside the container).
+          - url: "http://192.168.150.16:13378"
 
     home-service:
       loadBalancer:
