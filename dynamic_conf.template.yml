@@ -318,7 +318,7 @@ http:
     dns-router-v6:
       rule: "Host(`dns.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-service-v6
+      service: dns-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -340,7 +340,7 @@ http:
     dns-01-router-v6:
       rule: "Host(`dns-01.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-01-service-v6
+      service: dns-01-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -362,7 +362,7 @@ http:
     dns-02-router-v6:
       rule: "Host(`dns-02.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-02-service-v6
+      service: dns-02-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -384,7 +384,7 @@ http:
     dns-03-router-v6:
       rule: "Host(`dns-03.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-03-service-v6
+      service: dns-03-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -406,7 +406,7 @@ http:
     dns-04-router-v6:
       rule: "Host(`dns-04.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-04-service-v6
+      service: dns-04-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -428,7 +428,7 @@ http:
     dns-05-router-v6:
       rule: "Host(`dns-05.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-05-service-v6
+      service: dns-05-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -450,7 +450,7 @@ http:
     dns-06-router-v6:
       rule: "Host(`dns-06.markridgwell.com`) && ClientIP(`::/0`)"
       priority: 100
-      service: dns-06-service-v6
+      service: dns-06-service-v6-failover
       entryPoints:
         - web-general
       tls:
@@ -867,6 +867,14 @@ http:
           - url: "https://[2a02:8010:61d5:42::105]"
           - url: "https://[2a02:8010:61d5:42::106]"
 
+    # Composes dns-service-v6 and dns-service without mixing IPv4/IPv6
+    # hosts in one pool: tries the IPv6 pool first, and once its health
+    # check reports zero healthy servers, falls back to the IPv4 pool.
+    dns-service-v6-failover:
+      failover:
+        service: dns-service-v6
+        fallback: dns-service
+
     dns-01-service:
       loadBalancer:
         serversTransport: dns-admin
@@ -892,6 +900,12 @@ http:
           timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::101]:53443"
+
+    # See dns-service-v6-failover above for the failover rationale.
+    dns-01-service-v6-failover:
+      failover:
+        service: dns-01-service-v6
+        fallback: dns-01-service
 
     dns-02-service:
       loadBalancer:
@@ -919,6 +933,12 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::102]:53443"
 
+    # See dns-service-v6-failover above for the failover rationale.
+    dns-02-service-v6-failover:
+      failover:
+        service: dns-02-service-v6
+        fallback: dns-02-service
+
     dns-03-service:
       loadBalancer:
         serversTransport: dns-admin
@@ -944,6 +964,12 @@ http:
           timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::103]:53443"
+
+    # See dns-service-v6-failover above for the failover rationale.
+    dns-03-service-v6-failover:
+      failover:
+        service: dns-03-service-v6
+        fallback: dns-03-service
 
     dns-04-service:
       loadBalancer:
@@ -971,6 +997,12 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::104]:53443"
 
+    # See dns-service-v6-failover above for the failover rationale.
+    dns-04-service-v6-failover:
+      failover:
+        service: dns-04-service-v6
+        fallback: dns-04-service
+
     dns-05-service:
       loadBalancer:
         serversTransport: dns-admin
@@ -997,6 +1029,12 @@ http:
         servers:
           - url: "https://[2a02:8010:61d5:42::105]:53443"
 
+    # See dns-service-v6-failover above for the failover rationale.
+    dns-05-service-v6-failover:
+      failover:
+        service: dns-05-service-v6
+        fallback: dns-05-service
+
     dns-06-service:
       loadBalancer:
         serversTransport: dns-admin
@@ -1022,6 +1060,12 @@ http:
           timeout: 5s
         servers:
           - url: "https://[2a02:8010:61d5:42::106]:53443"
+
+    # See dns-service-v6-failover above for the failover rationale.
+    dns-06-service-v6-failover:
+      failover:
+        service: dns-06-service-v6
+        fallback: dns-06-service
 
     github-api-service:
       loadBalancer:
