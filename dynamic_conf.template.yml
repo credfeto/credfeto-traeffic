@@ -26,7 +26,7 @@ http:
       serverName: "ollama.local"
     flathub:
       insecureSkipVerify: true
-      serverName: "flathub.markridgwell.com"
+      serverName: "flathub.local"
     dns:
       insecureSkipVerify: true
       serverName: "dns.markridgwell.com"
@@ -600,6 +600,14 @@ http:
       loadBalancer:
         serversTransport: pacman
         healthCheck:
+          # hostname: is required here - health checks bypass router
+          # middleware entirely, so without it the probe's Host header is the
+          # raw IP. The :7777 backend is a single nginx instance with two
+          # SNI-selected vhosts (pacman.local, flathub.local) and no
+          # default_server, so nginx falls back to its first block
+          # (flathub.local) - without this, /ping here would silently check
+          # flathub's vhost instead of pacman's own.
+          hostname: pacman.local
           path: /ping
           interval: 30s
           timeout: 5s
@@ -622,6 +630,12 @@ http:
       loadBalancer:
         serversTransport: flathub
         healthCheck:
+          # flathub.local is nginx's first `listen 7777 ssl` block, so it's
+          # already the effective default vhost - hostname: here is
+          # belt-and-braces rather than a behaviour change, but every vhost
+          # should set it explicitly rather than relying on nginx's block
+          # order.
+          hostname: flathub.local
           path: /ping
           interval: 30s
           timeout: 5s
@@ -1135,7 +1149,7 @@ http:
     flathub-header:
       headers:
         customRequestHeaders:
-          Host: "flathub.markridgwell.com"
+          Host: "flathub.local"
 
     aur-repo-header:
       headers:
