@@ -30,6 +30,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - audiobookshelf-service pointed at port 8080, which is actually Dozzle on that host - Audiobookshelf itself is published on port 13378; also adds a /healthcheck health check now that the port is correct
 ### Changed
 - Re-addressed dns-01..dns-04 backends to 192.168.42.101-104 (was .251-.254) with new dual-stack IPv6 addresses 2a02:8010:61d5:42::101-104
+- Pointed pacman-service and flathub-service at nginx's own TLS ports (8889/8777) on linux-cache-01/02 instead of the cache-proxy app on 7777, matching the flathub serversTransport serverName and flathub-header Host to flathub.local, since traffic now goes directly to nginx's TLS vhosts rather than through cache-proxy
 ### Deprecated
 ### Removed
 - IPv6 backend addresses from dns-01..dns-05 services; backends are IPv4-only for now

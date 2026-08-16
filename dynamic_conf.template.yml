@@ -26,7 +26,7 @@ http:
       serverName: "ollama.local"
     flathub:
       insecureSkipVerify: true
-      serverName: "flathub.markridgwell.com"
+      serverName: "flathub.local"
     dns:
       insecureSkipVerify: true
       serverName: "dns.markridgwell.com"
@@ -604,8 +604,8 @@ http:
           interval: 30s
           timeout: 5s
         servers:
-          - url: "https://192.168.150.200:7777"
-          - url: "https://192.168.150.201:7777"
+          - url: "https://192.168.150.200:8889"
+          - url: "https://192.168.150.201:8889"
 
     aur-service:
       loadBalancer:
@@ -626,8 +626,8 @@ http:
           interval: 30s
           timeout: 5s
         servers:
-          - url: "https://192.168.150.200:7777"
-          - url: "https://192.168.150.201:7777"
+          - url: "https://192.168.150.200:8777"
+          - url: "https://192.168.150.201:8777"
 
     aur-repo-service:
       loadBalancer:
@@ -1135,7 +1135,7 @@ http:
     flathub-header:
       headers:
         customRequestHeaders:
-          Host: "flathub.markridgwell.com"
+          Host: "flathub.local"
 
     aur-repo-header:
       headers:
