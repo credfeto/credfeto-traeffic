@@ -28,7 +28,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - watchtower missing a restart policy, leaving it stopped after a Docker daemon restart
 - api-nuget, funfair-nuget, funfair-prerelease-nuget and dotnet health checks were all silently probing the same default nginx vhost (builds.dotnet.local) instead of their own, since health checks bypass router middleware and the shared :5555 nginx has no default_server; added hostname: to each so they probe their own vhost, and added the missing npm health check the same way
 - audiobookshelf-service pointed at port 8080, which is actually Dozzle on that host - Audiobookshelf itself is published on port 13378; also adds a /healthcheck health check now that the port is correct
-- TBD - to be finalized after review
+- pacman-service and flathub-service health checks were silently probing the wrong :7777 nginx vhost (health checks bypass router middleware, and the shared :7777 backend has no default_server, so pacman's probe was hitting flathub.local's /ping instead of its own); added hostname: to each so they probe their own vhost, and corrected flathub's serversTransport serverName and flathub-header Host from flathub.markridgwell.com to flathub.local to match the backend's real vhost name
 ### Changed
 - Re-addressed dns-01..dns-04 backends to 192.168.42.101-104 (was .251-.254) with new dual-stack IPv6 addresses 2a02:8010:61d5:42::101-104
 ### Deprecated
