@@ -57,6 +57,14 @@ success "Pacman hooks installed"
 
 # 4. Generate traefik.yml and dynamic_conf.yml from their templates
 info "Generating traefik config from templates..."
+
+# /etc/traefik must be traversable by the traefik user - the packaged
+# traefik.service runs as User=traefik, and a plain root:root mkdir leaves
+# it unreadable to that user regardless of the files' own permissions.
+mkdir -p /etc/traefik || die "Failed to create /etc/traefik"
+chgrp traefik /etc/traefik || die "Failed to set group on /etc/traefik"
+chmod 750 /etc/traefik || die "Failed to set permissions on /etc/traefik"
+
 CLOUDFLARE_EMAIL=$(grep -E "^CLOUDFLARE_EMAIL=" .env | cut -d '=' -f2-)
 PHOTOS_LOCAL_SECRET=$(grep -E "^PHOTOS_LOCAL_SECRET=" .env | cut -d '=' -f2-)
 
@@ -69,7 +77,6 @@ CLOUDFLARE_EMAIL="${CLOUDFLARE_EMAIL}" envsubst '${CLOUDFLARE_EMAIL}' \
 
 traefik_restart_needed=0
 if [ ! -f /etc/traefik/traefik.yml ] || ! cmp -s "${rendered_traefik_yml}" /etc/traefik/traefik.yml; then
-    mkdir -p /etc/traefik || die "Failed to create /etc/traefik"
     cp "${rendered_traefik_yml}" /etc/traefik/traefik.yml || die "Failed to install traefik.yml"
     traefik_restart_needed=1
 fi
@@ -79,20 +86,22 @@ rm -f "${rendered_traefik_yml}"
 PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
     < dynamic_conf.template.yml > /etc/traefik/dynamic_conf.yml \
     || die "Failed to generate dynamic_conf.yml"
+# traefik (not root) reads this at runtime via the file provider, and it
+# carries PHOTOS_LOCAL_SECRET, so it must be readable by traefik but no one else.
+chown traefik:traefik /etc/traefik/dynamic_conf.yml || die "Failed to set ownership on dynamic_conf.yml"
 chmod 600 /etc/traefik/dynamic_conf.yml || die "Failed to set permissions on dynamic_conf.yml"
 success "Traefik config generated"
 # dynamic_conf.yml is picked up live by traefik's file provider (watch: true) -
 # no restart needed for changes here, only for traefik.yml above.
 
-# 5. ACME certificate storage
-if [ ! -d /etc/traefik/acme ]; then
-    mkdir -p /etc/traefik/acme || die "Failed to create /etc/traefik/acme"
-fi
-chown traefik:traefik /etc/traefik/acme || die "Failed to set ownership on /etc/traefik/acme"
-chmod 700 /etc/traefik/acme || die "Failed to set permissions on /etc/traefik/acme"
-[ -f /etc/traefik/acme/acme.json ] || : > /etc/traefik/acme/acme.json || die "Failed to create acme.json"
-chown traefik:traefik /etc/traefik/acme/acme.json || die "Failed to set ownership on acme.json"
-chmod 600 /etc/traefik/acme/acme.json || die "Failed to set permissions on acme.json"
+# 5. ACME certificate storage. Must be exactly /etc/traefik/acme.json (a flat
+# file, not a subdirectory): the packaged traefik.service hardens with
+# ProtectSystem=strict and only allow-lists ReadWritePaths=/etc/traefik/acme.json,
+# so anything else is write-blocked by the service sandbox regardless of its
+# own file permissions.
+[ -f /etc/traefik/acme.json ] || : > /etc/traefik/acme.json || die "Failed to create acme.json"
+chown traefik:traefik /etc/traefik/acme.json || die "Failed to set ownership on acme.json"
+chmod 600 /etc/traefik/acme.json || die "Failed to set permissions on acme.json"
 
 # 6. Point traefik.service at this checkout's .env for CF_DNS_API_TOKEN
 info "Configuring traefik.service environment..."
