@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = traefik
+
+[Action]
+Description = Restarting traefik.service after upgrade...
+When = PostTransaction
+Exec = /usr/bin/systemctl try-restart traefik.service

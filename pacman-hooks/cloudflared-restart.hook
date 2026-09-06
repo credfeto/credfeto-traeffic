@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = cloudflared
+
+[Action]
+Description = Restarting cloudflared.service after upgrade...
+When = PostTransaction
+Exec = /usr/bin/systemctl try-restart cloudflared.service

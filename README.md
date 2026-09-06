@@ -10,21 +10,19 @@ Traefik v3 reverse proxy using Let's Encrypt TLS via Cloudflare DNS challenge.
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
+- Arch Linux host with `pacman`, `systemd`, and `firewalld`
 - A Cloudflare account managing your domain's DNS
 - A Cloudflare API token with **Zone → DNS → Edit** permission scoped to your domain
 
+`traefik` and `cloudflared` are installed from Arch's official `extra` repository by `./update`
+(`pacman -S --needed traefik cloudflared`); no manual package installation is required first.
+Ongoing package updates are handled by whatever mechanism keeps this host's packages current
+(e.g. an existing ansible-pull setup) - `./update` installs a pacman hook for each service so it
+restarts automatically when its package is upgraded.
+
 ## First-time setup
 
-### 1. Create the ACME volume
-
-Traefik stores Let's Encrypt certificates in a named Docker volume that must be created before starting:
-
-```bash
-docker volume create traefik-acme
-```
-
-### 2. Create the `.env` file
+### 1. Create the `.env` file
 
 Copy the example and fill in your credentials:
 
@@ -47,11 +45,10 @@ PHOTOS_LOCAL_SECRET=your_photos_shared_secret
 
 | Variable | Required | Used by | Purpose |
 | -------- | -------- | ------- | ------- |
-| `CLOUDFLARE_EMAIL` | Yes | `traefik` | Used to populate Traefik ACME email (`TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL`) for Let's Encrypt registration. |
-| `CF_DNS_API_TOKEN` | Yes | `traefik` | Cloudflare DNS API token used by the ACME DNS challenge provider. |
-| `CLOUDFLARE_TUNNEL_TOKEN` | Yes (if running `cloudflare` service) | `cloudflare` | Token passed to `cloudflared tunnel run --token ...` to establish the Cloudflare Tunnel. |
+| `CLOUDFLARE_EMAIL` | Yes | `traefik` | Templated into `traefik.yml`'s `certificatesResolvers.letsencrypt.acme.email` for Let's Encrypt registration. |
+| `CF_DNS_API_TOKEN` | Yes | `traefik` | Cloudflare DNS API token used by the ACME DNS challenge provider; read live from `.env` via `traefik.service`'s `EnvironmentFile=`. |
+| `CLOUDFLARE_TUNNEL_TOKEN` | Yes | `cloudflared` | Consumed once by `cloudflared service install` when `./update` first bootstraps the tunnel service; not re-read afterwards. |
 | `PHOTOS_LOCAL_SECRET` | Yes | `./update` | Shared secret injected into the photos router rule. Requests to port 450 must include `X-Local: <value>` matching this secret; unauthorized requests are rejected. Configure Cloudflare Tunnel to add this header on all requests to the photos origin. |
-| `TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL` | Set by compose | `traefik` container environment | Derived from `${CLOUDFLARE_EMAIL}` in `docker-compose.yml`; no separate `.env` entry is required. |
 
 ### 3. Start Traefik
 
@@ -59,16 +56,20 @@ PHOTOS_LOCAL_SECRET=your_photos_shared_secret
 ./update
 ```
 
-The `update` script validates `.env`, generates `dynamic_conf.yml` from the template, sets up volumes and firewall rules, pulls images, and starts the containers.
+The `update` script validates `.env`, installs/updates the `traefik` and `cloudflared` packages,
+installs pacman hooks that restart each service on its own package upgrade, generates
+`traefik.yml` and `dynamic_conf.yml` from their templates, sets up ACME storage and firewall
+rules, bootstraps the cloudflared tunnel service on first run, and enables/starts both services.
 
 ## Configuration files
 
 | File | Purpose |
 | ---- | ------- |
-| `traefik.yml` | Static configuration — entrypoints, ACME, providers |
+| `traefik.template.yml` | Static configuration template — entrypoints, ACME, providers; committed to git |
 | `dynamic_conf.template.yml` | Dynamic configuration template — routers, services, middlewares; committed to git |
-| `dynamic_conf.yml` | Generated from template by `./update`; gitignored, never committed |
-| `traefik-acme` (Docker volume) | Let's Encrypt certificate storage |
+| `/etc/traefik/traefik.yml` | Generated from `traefik.template.yml` by `./update`; deployed on the host, never committed |
+| `/etc/traefik/dynamic_conf.yml` | Generated from `dynamic_conf.template.yml` by `./update`; deployed on the host, never committed |
+| `/etc/traefik/acme/acme.json` | Let's Encrypt certificate storage |
 
 ## Adding a new service
 

@@ -31,11 +31,14 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - pacman-service and flathub-service health checks were silently probing the wrong :7777 nginx vhost (health checks bypass router middleware, and the shared :7777 backend has no default_server, so pacman's probe was hitting flathub.local's /ping instead of its own); added hostname: to each so they probe their own vhost, and corrected flathub's serversTransport serverName and flathub-header Host from flathub.markridgwell.com to flathub.local to match the backend's real vhost name
 ### Changed
 - Re-addressed dns-01..dns-04 backends to 192.168.42.101-104 (was .251-.254) with new dual-stack IPv6 addresses 2a02:8010:61d5:42::101-104
+- Replaced the Docker-based deployment (traefik, cloudflared, watchtower containers) with native Arch Linux systemd services: traefik and cloudflared are now installed from pacman, traefik.yml is generated from a new traefik.template.yml, and pacman hooks restart each service when its package is upgraded, replacing watchtower's role
 ### Deprecated
 ### Removed
 - IPv6 backend addresses from dns-01..dns-05 services; backends are IPv4-only for now
 ### Deployment Changes
+
 <!--
 Releases that have at least been deployed to staging, BUT NOT necessarily released to live.  Changes should be moved from [Unreleased] into here as they are merged into the appropriate release branch
 -->
+
 ## [0.0.0] - Project created
