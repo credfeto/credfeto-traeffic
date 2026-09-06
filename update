@@ -103,13 +103,23 @@ success "Traefik config generated"
 chown traefik:traefik /etc/traefik/acme.json || die "Failed to set ownership on acme.json"
 chmod 600 /etc/traefik/acme.json || die "Failed to set permissions on acme.json"
 
-# 6. Point traefik.service at this checkout's .env for CF_DNS_API_TOKEN
+# 6. Point traefik.service at this checkout's .env for CF_DNS_API_TOKEN, and
+#    give it a real writable working directory. The packaged unit hardens
+#    with ProtectSystem=strict and only allow-lists ReadWritePaths=/etc/traefik/acme.json,
+#    but the traefik-api-token-middleware plugin also needs to write its own
+#    plugins-storage directory relative to the process's working directory -
+#    with no WorkingDirectory= set, that defaults to a read-only path and the
+#    plugin (and any middleware using it, e.g. photos-local-check) fails to load.
 info "Configuring traefik.service environment..."
+mkdir -p /var/lib/traefik || die "Failed to create /var/lib/traefik"
+chown traefik:traefik /var/lib/traefik || die "Failed to set ownership on /var/lib/traefik"
+chmod 750 /var/lib/traefik || die "Failed to set permissions on /var/lib/traefik"
+
 mkdir -p /etc/systemd/system/traefik.service.d \
     || die "Failed to create traefik.service.d"
 override_conf=/etc/systemd/system/traefik.service.d/override.conf
 rendered_override=$(mktemp)
-printf '[Service]\nEnvironmentFile=%s/.env\n' "${repo_dir}" > "${rendered_override}"
+printf '[Service]\nEnvironmentFile=%s/.env\nWorkingDirectory=/var/lib/traefik\nReadWritePaths=/var/lib/traefik\n' "${repo_dir}" > "${rendered_override}"
 if [ ! -f "${override_conf}" ] || ! cmp -s "${rendered_override}" "${override_conf}"; then
     cp "${rendered_override}" "${override_conf}" || die "Failed to install traefik.service override"
     traefik_restart_needed=1
