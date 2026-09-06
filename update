@@ -23,8 +23,14 @@ check_env_var() {
     fi
 }
 
+# Absolute path of this checkout, regardless of the caller's working directory -
+# systemd's EnvironmentFile= needs a real path, not one relative to wherever
+# this script happened to be invoked from.
+repo_dir=$(CDPATH="" cd -- "$(dirname -- "$0")" && pwd)
+
 # 0. Validate .env
-[ -f .env ] || die ".env file not found - copy .env.example and fill in your credentials"
+[ -f "${repo_dir}/.env" ] || die ".env file not found - copy .env.example and fill in your credentials"
+cd "${repo_dir}"
 check_env_var CLOUDFLARE_EMAIL
 check_env_var CF_DNS_API_TOKEN
 check_env_var CLOUDFLARE_TUNNEL_TOKEN
@@ -34,30 +40,98 @@ check_env_var PHOTOS_LOCAL_SECRET
 info "Pulling latest config..."
 git pull || die "Failed to pull latest changes"
 
-# 2. Generate dynamic_conf.yml from template
-info "Generating dynamic config from template..."
+# 2. Install/update traefik and cloudflared
+info "Installing traefik and cloudflared..."
+pacman -S --needed --noconfirm traefik cloudflared || die "Failed to install traefik/cloudflared"
+
+# 3. Install pacman hooks that restart the services when a package upgrade
+#    replaces the running binary (this is what watchtower did for the
+#    containers - here it's ansible-pull's pacman -Syu that triggers it).
+info "Installing pacman hooks..."
+mkdir -p /etc/pacman.d/hooks || die "Failed to create /etc/pacman.d/hooks"
+cp pacman-hooks/traefik-restart.hook /etc/pacman.d/hooks/traefik-restart.hook \
+    || die "Failed to install traefik pacman hook"
+cp pacman-hooks/cloudflared-restart.hook /etc/pacman.d/hooks/cloudflared-restart.hook \
+    || die "Failed to install cloudflared pacman hook"
+success "Pacman hooks installed"
+
+# 4. Generate traefik.yml and dynamic_conf.yml from their templates
+info "Generating traefik config from templates..."
+
+# /etc/traefik must be traversable by the traefik user - the packaged
+# traefik.service runs as User=traefik, and a plain root:root mkdir leaves
+# it unreadable to that user regardless of the files' own permissions.
+mkdir -p /etc/traefik || die "Failed to create /etc/traefik"
+chgrp traefik /etc/traefik || die "Failed to set group on /etc/traefik"
+chmod 750 /etc/traefik || die "Failed to set permissions on /etc/traefik"
+
+CLOUDFLARE_EMAIL=$(grep -E "^CLOUDFLARE_EMAIL=" .env | cut -d '=' -f2-)
 PHOTOS_LOCAL_SECRET=$(grep -E "^PHOTOS_LOCAL_SECRET=" .env | cut -d '=' -f2-)
+
+rendered_traefik_yml=$(mktemp)
 # envsubst requires the literal variable-name string here (not shell-expanded) to know which variables to substitute
 # shellcheck disable=SC2016
-PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
-    < dynamic_conf.template.yml > dynamic_conf.yml \
-    || die "Failed to generate dynamic_conf.yml"
-chmod 600 dynamic_conf.yml || die "Failed to set permissions on dynamic_conf.yml"
-success "dynamic_conf.yml generated"
+CLOUDFLARE_EMAIL="${CLOUDFLARE_EMAIL}" envsubst '${CLOUDFLARE_EMAIL}' \
+    < traefik.template.yml > "${rendered_traefik_yml}" \
+    || die "Failed to render traefik.yml"
 
-# 3. Create acme data directory and docker volume
-if [ ! -d /data/acme ]; then
-    mkdir -p /data/acme || die "Failed to create /data/acme"
-    chmod 700 /data/acme || die "Failed to set permissions on /data/acme"
+traefik_restart_needed=0
+if [ ! -f /etc/traefik/traefik.yml ] || ! cmp -s "${rendered_traefik_yml}" /etc/traefik/traefik.yml; then
+    cp "${rendered_traefik_yml}" /etc/traefik/traefik.yml || die "Failed to install traefik.yml"
+    traefik_restart_needed=1
 fi
+rm -f "${rendered_traefik_yml}"
 
-if ! docker volume inspect traefik-acme > /dev/null 2>&1; then
-    docker volume create \
-        --driver local \
-        --opt type=none \
-        --opt o=bind \
-        --opt device=/data/acme \
-        traefik-acme || die "Failed to create docker volume traefik-acme"
+# shellcheck disable=SC2016
+PHOTOS_LOCAL_SECRET="${PHOTOS_LOCAL_SECRET}" envsubst '${PHOTOS_LOCAL_SECRET}' \
+    < dynamic_conf.template.yml > /etc/traefik/dynamic_conf.yml \
+    || die "Failed to generate dynamic_conf.yml"
+# traefik (not root) reads this at runtime via the file provider, and it
+# carries PHOTOS_LOCAL_SECRET, so it must be readable by traefik but no one else.
+chown traefik:traefik /etc/traefik/dynamic_conf.yml || die "Failed to set ownership on dynamic_conf.yml"
+chmod 600 /etc/traefik/dynamic_conf.yml || die "Failed to set permissions on dynamic_conf.yml"
+success "Traefik config generated"
+# dynamic_conf.yml is picked up live by traefik's file provider (watch: true) -
+# no restart needed for changes here, only for traefik.yml above.
+
+# 5. ACME certificate storage. Must be exactly /etc/traefik/acme.json (a flat
+# file, not a subdirectory): the packaged traefik.service hardens with
+# ProtectSystem=strict and only allow-lists ReadWritePaths=/etc/traefik/acme.json,
+# so anything else is write-blocked by the service sandbox regardless of its
+# own file permissions.
+[ -f /etc/traefik/acme.json ] || : > /etc/traefik/acme.json || die "Failed to create acme.json"
+chown traefik:traefik /etc/traefik/acme.json || die "Failed to set ownership on acme.json"
+chmod 600 /etc/traefik/acme.json || die "Failed to set permissions on acme.json"
+
+# 6. Point traefik.service at this checkout's .env for CF_DNS_API_TOKEN, and
+#    give it a real writable working directory. The packaged unit hardens
+#    with ProtectSystem=strict and only allow-lists ReadWritePaths=/etc/traefik/acme.json,
+#    but the traefik-api-token-middleware plugin also needs to write its own
+#    plugins-storage directory relative to the process's working directory -
+#    with no WorkingDirectory= set, that defaults to a read-only path and the
+#    plugin (and any middleware using it, e.g. photos-local-check) fails to load.
+info "Configuring traefik.service environment..."
+mkdir -p /var/lib/traefik || die "Failed to create /var/lib/traefik"
+chown traefik:traefik /var/lib/traefik || die "Failed to set ownership on /var/lib/traefik"
+chmod 750 /var/lib/traefik || die "Failed to set permissions on /var/lib/traefik"
+
+mkdir -p /etc/systemd/system/traefik.service.d \
+    || die "Failed to create traefik.service.d"
+override_conf=/etc/systemd/system/traefik.service.d/override.conf
+rendered_override=$(mktemp)
+printf '[Service]\nEnvironmentFile=%s/.env\nWorkingDirectory=/var/lib/traefik\nReadWritePaths=/var/lib/traefik\n' "${repo_dir}" > "${rendered_override}"
+if [ ! -f "${override_conf}" ] || ! cmp -s "${rendered_override}" "${override_conf}"; then
+    cp "${rendered_override}" "${override_conf}" || die "Failed to install traefik.service override"
+    traefik_restart_needed=1
+fi
+rm -f "${rendered_override}"
+
+# 7. Bootstrap the cloudflared tunnel service (one-time; the token is baked
+#    into its generated unit/config, not re-read from .env on every run)
+if [ ! -f /etc/systemd/system/cloudflared.service ]; then
+    info "Installing cloudflared tunnel service..."
+    CLOUDFLARE_TUNNEL_TOKEN=$(grep -E "^CLOUDFLARE_TUNNEL_TOKEN=" .env | cut -d '=' -f2-)
+    cloudflared service install "${CLOUDFLARE_TUNNEL_TOKEN}" || die "Failed to install cloudflared service"
 fi
 
 allow_ipv4_range() {
@@ -92,7 +166,7 @@ allow_public_udp_port() {
     fi
 }
 
-# 4. Firewall rules - allow private networks to reach port 443 TCP/UDP
+# 8. Firewall rules - allow private networks to reach port 443 TCP/UDP
 IPV4_RANGES="10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
 IPV6_RANGES="fc00::/7 fe80::/10"
 
@@ -110,9 +184,15 @@ allow_public_udp_port 52363
 
 firewall-cmd --reload || die "Failed to reload firewall"
 
-# 5. Pull latest images and restart containers
-info "Pulling latest images..."
-docker compose pull || die "Failed to pull docker images"
-info "Starting containers..."
-docker compose up -d || die "Failed to start containers"
+# 9. Start/enable the services, restarting traefik only if its static config
+#    or environment actually changed
+systemctl daemon-reload || die "Failed to reload systemd units"
+systemctl enable --now cloudflared.service || die "Failed to enable/start cloudflared"
+if [ "${traefik_restart_needed}" -eq 1 ]; then
+    info "Restarting traefik (config changed)..."
+    systemctl enable --now traefik.service || die "Failed to enable/start traefik"
+    systemctl restart traefik.service || die "Failed to restart traefik"
+else
+    systemctl enable --now traefik.service || die "Failed to enable/start traefik"
+fi
 success "Done"

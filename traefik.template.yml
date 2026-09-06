@@ -143,12 +143,11 @@ entryPoints:
         - "fc00::/7"
         - "fe80::/10"
 
-# Requires CF_DNS_API_TOKEN environment variable for Cloudflare
 certificatesResolvers:
   letsencrypt:
     acme:
-
-      storage: /etc/traefik/acme/acme.json
+      email: "${CLOUDFLARE_EMAIL}"
+      storage: /etc/traefik/acme.json
       dnsChallenge:
         provider: cloudflare
         delayBeforeCheck: 0

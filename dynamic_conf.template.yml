@@ -82,6 +82,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - api-nuget-header
 
@@ -93,6 +97,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - funfair-nuget-header
 
@@ -104,6 +112,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - funfair-prerelease-nuget-header
 
@@ -115,6 +127,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - npm-header
 
@@ -126,6 +142,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dotnet-header
 
@@ -137,6 +157,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - pacman-header
 
@@ -147,6 +171,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - aur-header
 
@@ -157,6 +185,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - flathub-header
 
@@ -167,6 +199,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - aur-repo-header
 
@@ -177,6 +213,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - photos-header
 
@@ -187,6 +227,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - homeassistant-header
 
@@ -197,6 +241,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - audiobookshelf-header
 
@@ -207,6 +255,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - home-header
 
@@ -225,6 +277,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - docker-registry-header
 
@@ -243,6 +299,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - docker-cache-header
 
@@ -254,6 +314,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - defi-header
 
@@ -272,6 +336,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - ollama-header
 
@@ -282,6 +350,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - linux-cache-01-header
 
@@ -292,6 +364,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - linux-cache-02-header
 
@@ -302,6 +378,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dev-cache-01-header
 
@@ -312,6 +392,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dev-cache-02-header
 
@@ -323,6 +407,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-header
 
@@ -334,6 +422,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-header
 
@@ -345,6 +437,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-01-header
 
@@ -356,6 +452,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-01-header
 
@@ -367,6 +467,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-02-header
 
@@ -378,6 +482,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-02-header
 
@@ -389,6 +497,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-03-header
 
@@ -400,6 +512,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-03-header
 
@@ -411,6 +527,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-04-header
 
@@ -422,6 +542,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-04-header
 
@@ -433,6 +557,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-05-header
 
@@ -444,6 +572,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-05-header
 
@@ -455,6 +587,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-06-header
 
@@ -466,6 +602,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - dns-06-header
 
@@ -476,6 +616,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - github-api-header
 
@@ -486,6 +630,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - git-workflow-header
 
@@ -496,6 +644,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - cctv-header
 
@@ -506,6 +658,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - keys-header
 
@@ -516,6 +672,10 @@ http:
         - web-general
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "markridgwell.com"
+            sans:
+              - "*.markridgwell.com"
       middlewares:
         - monitoring-header
 
