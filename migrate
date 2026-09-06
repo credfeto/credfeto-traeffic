@@ -1,0 +1,61 @@
+#!/bin/sh
+
+set -e
+
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
+
+# One-time cutover from the old Docker-based deployment to the native
+# systemd services. Safe to re-run: every step is a no-op once there is
+# nothing left to migrate.
+
+# 1. Stop and remove the old containers - they hold ports 443 etc. under
+#    restart: always regardless of docker-compose.yml no longer existing in
+#    this checkout, so removing the compose file alone does not free them.
+OLD_CONTAINERS="traefik cloudflare watchtower"
+for container in $OLD_CONTAINERS; do
+    if docker inspect "$container" > /dev/null 2>&1; then
+        info "Stopping and removing Docker container '${container}'..."
+        docker stop "$container" || die "Failed to stop container ${container}"
+        docker rm "$container" || die "Failed to remove container ${container}"
+    fi
+done
+success "Old Docker containers stopped"
+
+# 2. Migrate existing Let's Encrypt certificates so they are reused instead
+#    of being re-requested from Let's Encrypt on first native start.
+#    /data/acme is the bind-mount source the old ./update created for the
+#    traefik-acme Docker volume; /etc/traefik/acme is where the native
+#    traefik.service (see traefik.template.yml) expects to find it.
+old_acme=/data/acme/acme.json
+new_acme=/etc/traefik/acme/acme.json
+if [ -f "${old_acme}" ] && [ ! -f "${new_acme}" ]; then
+    info "Migrating ACME certificate storage..."
+    mkdir -p /etc/traefik/acme || die "Failed to create /etc/traefik/acme"
+    cp "${old_acme}" "${new_acme}" || die "Failed to copy acme.json"
+    chmod 600 "${new_acme}" || die "Failed to set permissions on acme.json"
+    success "ACME certificates migrated"
+else
+    info "No ACME migration needed"
+fi
+
+# 3. Install and start the native services. ./update installs the traefik
+#    package (creating the traefik user via sysusers) and then fixes
+#    ownership on /etc/traefik/acme and acme.json, so ownership does not
+#    need to be set here before the package exists.
+./update
+
+# Deliberately left in place as a rollback fallback until the native
+# deployment has been confirmed working: /data/acme, the traefik-acme
+# Docker volume, and the traefik-acme Docker volume's own acme.json.
+# Remove them manually once you're confident the cutover is solid.

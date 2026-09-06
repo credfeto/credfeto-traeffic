@@ -61,6 +61,17 @@ installs pacman hooks that restart each service on its own package upgrade, gene
 `traefik.yml` and `dynamic_conf.yml` from their templates, sets up ACME storage and firewall
 rules, bootstraps the cloudflared tunnel service on first run, and enables/starts both services.
 
+### Migrating from the previous Docker-based setup
+
+If this host was previously running Traefik via `docker-compose.yml`, run `./migrate` once
+instead of `./update` directly. It stops and removes the old `traefik`, `cloudflare`, and
+`watchtower` containers (which otherwise keep holding the ports under `restart: always`), copies
+the existing Let's Encrypt certificates from the old bind-mounted `/data/acme/acme.json` into
+`/etc/traefik/acme/acme.json` so they're reused instead of re-requested, then runs `./update`.
+It's safe to re-run: every step is a no-op once there's nothing left to migrate. The old
+`/data/acme` directory and the `traefik-acme` Docker volume are left in place afterwards as a
+rollback fallback; remove them manually once the native deployment is confirmed working.
+
 ## Configuration files
 
 | File | Purpose |
